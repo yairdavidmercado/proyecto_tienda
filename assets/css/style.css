@@ -8,10 +8,21 @@
     --muted: #ececf1;
     --primary: #f5f5f7;
     --shadow: 0 24px 55px rgba(0, 0, 0, 0.28);
+    --menu-height: 112px;
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--menu-height) + 18px);
+}
+
+#productos,
+#categorias,
+#contacto,
+#carrito {
+    scroll-margin-top: calc(var(--menu-height) + 18px);
+}
 body {
     font-family: 'Inter', sans-serif;
     background:
@@ -39,6 +50,15 @@ body {
     background: rgba(20, 20, 23, 0.42);
 }
 
+.glass-nav .container {
+    min-height: var(--menu-height);
+}
+
+.glass-nav .nav-link {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
 .nav-session-actions {
     display: flex;
     align-items: center;
@@ -47,6 +67,7 @@ body {
 
 .nav-country-select {
     min-width: 190px;
+    min-height: 44px;
     border-radius: 999px;
     background: rgba(255,255,255,0.08);
     border: 1px solid rgba(255,255,255,0.18);
@@ -61,12 +82,26 @@ body {
     color: #111;
 }
 
+.nav-session-actions .btn {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .brand-dot {
     width: 12px;
     height: 12px;
     border-radius: 50%;
     background: linear-gradient(135deg, #ffffff, #8a8a8f);
     display: inline-block;
+}
+.brand-logo {
+    height: 78px;
+    width: auto;
+    max-width: 130px;
+    object-fit: contain;
+    display: block;
 }
 
 .hero-section {
@@ -326,10 +361,10 @@ body {
 }
 .cart-drawer {
     position: fixed;
-    top: 86px;
+    top: var(--menu-height);
     right: 0;
     width: min(620px, 94vw);
-    height: calc(100vh - 86px);
+    height: calc(100vh - var(--menu-height));
     margin-top: 0 !important;
     overflow: hidden;
     display: flex;
@@ -437,6 +472,13 @@ body.cart-open {
     margin-bottom: 0;
 }
 .benefits-list li + li { margin-top: .9rem; }
+.payment-methods-content {
+    color: var(--muted);
+    white-space: pre-line;
+    font-size: .98rem;
+    line-height: 1.7;
+    margin-bottom: 0;
+}
 .contact-card { height: 100%; }
 .footer { border-top: 1px solid rgba(255,255,255,0.08); }
 .btn-primary {
@@ -500,6 +542,25 @@ body.cart-open {
     border-radius: 24px;
     overflow: hidden;
 }
+.admin-table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.admin-data-table {
+    min-width: 920px;
+}
+.admin-data-table th,
+.admin-data-table td {
+    white-space: nowrap;
+}
+.admin-data-table td:first-child {
+    white-space: normal;
+    min-width: 220px;
+}
+.admin-data-table td:nth-child(3) {
+    white-space: normal;
+    min-width: 220px;
+}
 .admin-shell { min-height: 100vh; background: var(--bg); }
 .sidebar {
     width: 280px;
@@ -518,6 +579,99 @@ body.cart-open {
 }
 .content-wrap { flex: 1; }
 .login-card { max-width: 440px; }
+
+.admin-site {
+    background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.98), rgba(246,247,249,0.98) 48%, rgba(236,238,241,0.98) 100%),
+        #f5f5f7;
+    color: #1d1d1f;
+}
+
+.admin-site .admin-shell {
+    background: transparent;
+}
+
+.admin-site .sidebar {
+    background: rgba(255,255,255,0.82);
+    border-right: 1px solid rgba(0,0,0,0.08);
+    box-shadow: inset -1px 0 0 rgba(255,255,255,0.65);
+}
+
+.admin-site .glass-panel,
+.admin-site .login-card {
+    background: rgba(255,255,255,0.78);
+    border: 1px solid rgba(255,255,255,0.95);
+    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+}
+
+.admin-site .text-white,
+.admin-site .sidebar .navbar-brand,
+.admin-site h1,
+.admin-site h2,
+.admin-site h3,
+.admin-site h4,
+.admin-site h5 {
+    color: #1d1d1f !important;
+}
+
+.admin-site .text-secondary,
+.admin-site .benefits-list,
+.admin-site .sidebar .nav-link {
+    color: #6e6e73 !important;
+}
+
+.admin-site .sidebar .nav-link.active,
+.admin-site .sidebar .nav-link:hover {
+    background: #1d1d1f;
+    color: #ffffff !important;
+}
+
+.admin-site .form-control,
+.admin-site .form-select,
+.admin-site textarea.form-control {
+    background: rgba(255,255,255,0.96);
+    color: #1d1d1f;
+    border: 1px solid rgba(10,10,10,0.12);
+}
+
+.admin-site .form-control:focus,
+.admin-site .form-select:focus,
+.admin-site textarea.form-control:focus {
+    background: #ffffff;
+    color: #1d1d1f;
+    border-color: rgba(10,10,10,0.25);
+    box-shadow: 0 0 0 .25rem rgba(17, 24, 39, 0.08);
+}
+
+.admin-site .table,
+.admin-site .admin-data-table {
+    --bs-table-bg: transparent;
+    --bs-table-color: #1d1d1f;
+    --bs-table-border-color: rgba(0,0,0,0.08);
+}
+
+.admin-site .table-dark-glass {
+    background: rgba(255,255,255,0.72);
+    color: #1d1d1f;
+}
+
+.admin-site .btn-light {
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.12);
+    color: #1d1d1f;
+}
+
+.admin-site .btn-outline-light {
+    border-color: rgba(0,0,0,0.22);
+    color: #1d1d1f;
+}
+
+.admin-site .btn-outline-light:hover {
+    background: rgba(255,255,255,0.96);
+    border-color: rgba(0,0,0,0.34);
+    color: #1d1d1f;
+}
+
 @media (max-width: 991.98px) {
     .section-padding { padding: 72px 0; }
     .hero-section .min-vh-100 { min-height: auto !important; }
@@ -537,9 +691,12 @@ body.cart-open {
     }
     .cart-drawer {
         width: 100vw;
-        top: 74px;
-        height: calc(100vh - 74px);
+        top: var(--menu-height);
+        height: calc(100vh - var(--menu-height));
         border-radius: 0;
+    }
+    .admin-data-table {
+        min-width: 760px;
     }
 }
 
@@ -595,7 +752,8 @@ body.cart-open {
 
 .public-site .text-secondary,
 .public-site .eyebrow,
-.public-site .benefits-list {
+.public-site .benefits-list,
+.public-site .payment-methods-content {
     color: #6e6e73 !important;
 }
 

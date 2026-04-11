@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const sendCartWhatsappBtn = document.querySelector('#sendCartWhatsappBtn');
   const clearCartBtn = document.querySelector('#clearCartBtn');
   const cartCountBadge = document.querySelector('#cartCountBadge');
+  const paymentMethodsDataNode = document.querySelector('#paymentMethodsByCountryData');
+  const paymentMethodsContent = document.querySelector('#paymentMethodsContent');
 
   if (!countrySelector) {
     return;
@@ -70,12 +72,34 @@ document.addEventListener('DOMContentLoaded', () => {
     US: normalizePhone(countrySelector.dataset.whatsappUs)
   };
 
+  const whatsappMessageByCountry = {
+    CO: String(countrySelector.dataset.whatsappMessageCo || ''),
+    ES: String(countrySelector.dataset.whatsappMessageEs || ''),
+    MX: String(countrySelector.dataset.whatsappMessageMx || ''),
+    US: String(countrySelector.dataset.whatsappMessageUs || '')
+  };
+
+  const parsePaymentMethodsByCountry = () => {
+    if (!paymentMethodsDataNode) {
+      return {};
+    }
+
+    try {
+      const parsed = JSON.parse(paymentMethodsDataNode.textContent || '{}');
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (error) {
+      return {};
+    }
+  };
+
+  const paymentMethodsByCountry = parsePaymentMethodsByCountry();
+
   const i18n = {
     'es-CO': {
       nav_categories: 'Categorias', nav_products: 'Productos', nav_contact: 'Contacto',
       country_select_label: 'Selecciona tu pais', country_co: '🇨🇴 Colombia', country_es: '🇪🇸 Espana', country_mx: '🇲🇽 Mexico', country_us: '🇺🇸 Estados Unidos',
       cart_nav: 'Carrito', login: 'Iniciar sesion', hero_badge: 'Catalogo digital automatizado',
-      hero_title: 'Combos, cuentas y pantallas listas para vender', hero_subtitle: 'Diseno limpio, visual premium y experiencia rapida para convertir visitas en pedidos.',
+      hero_title: 'Combos, cuentas y pantallas listas para vender', hero_subtitle: 'Pantallas streaming con entrega inmediata, precios claros y atencion directa por WhatsApp.',
       hero_cta_catalog: 'Ver catalogo', hero_cta_whatsapp: 'Pedir por WhatsApp', featured: 'Destacado',
       hero_side_title: 'Experiencia visual moderna', hero_side_text: 'Diseno limpio, elegante y claro con estilo premium.',
       categories: 'Categorias', catalog: 'Catalogo', products_available: 'Productos disponibles',
@@ -87,9 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
       cart_empty: 'Tu carrito esta vacio. Agrega productos para generar tu pedido.',
       table_product: 'Producto', table_unit_price: 'Precio unitario', table_quantity: 'Cantidad', table_subtotal: 'Subtotal',
       order_total: 'Total del pedido', explore: 'Explora', categories_help: 'Organiza el catalogo en bloques simples para que el cliente entienda rapido que puede comprar.',
-      benefits: 'Beneficios', benefits_title: 'Beneficios para vender cuentas streaming',
-      benefit_1: 'Publica cuentas de Netflix, Disney+, Max y mas con fichas claras por plan.', benefit_2: 'Muestra precios por pais y moneda para vender a clientes locales e internacionales.',
-      benefit_3: 'Recibe pedidos completos por WhatsApp con cantidades y productos listos para confirmar.', benefit_4: 'Actualiza tasas, numeros de WhatsApp y catalogo sin tocar codigo.',
+      payment_methods: 'Medios de pago', payment_methods_title: 'Opciones de pago por pais',
+      payment_methods_help: 'Cambia de pais para mostrar medios de pago locales e internacionales.',
       contact: 'Contacto', contact_title: 'Atencion inmediata', contact_help: 'Conecta al cliente con un mensaje precargado para acelerar la compra.',
       contact_cta: 'Hablar por WhatsApp', footer_dev: 'Desarrollado con Bootstrap 5, PHP y MySQL.',
       remove: 'Quitar', msg_empty_cart: 'Tu carrito esta vacio. Agrega productos antes de enviar el pedido.',
@@ -102,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
       nav_categories: 'Categorias', nav_products: 'Productos', nav_contact: 'Contacto',
       country_select_label: 'Selecciona tu pais', country_co: '🇨🇴 Colombia', country_es: '🇪🇸 Espana', country_mx: '🇲🇽 Mexico', country_us: '🇺🇸 Estados Unidos',
       cart_nav: 'Carrito', login: 'Iniciar sesion', hero_badge: 'Catalogo digital automatizado',
-      hero_title: 'Combos, cuentas y pantallas listas para vender', hero_subtitle: 'Diseno limpio, visual premium y experiencia rapida para convertir visitas en pedidos.',
+      hero_title: 'Combos, cuentas y pantallas listas para vender', hero_subtitle: 'Pantallas streaming con entrega inmediata, precios claros y atencion directa por WhatsApp.',
       hero_cta_catalog: 'Ver catalogo', hero_cta_whatsapp: 'Pedir por WhatsApp', featured: 'Destacado',
       hero_side_title: 'Experiencia visual moderna', hero_side_text: 'Diseno limpio, elegante y claro con estilo premium.',
       categories: 'Categorias', catalog: 'Catalogo', products_available: 'Productos disponibles',
@@ -114,9 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
       cart_empty: 'Tu carrito esta vacio. Anade productos para generar tu pedido.',
       table_product: 'Producto', table_unit_price: 'Precio unitario', table_quantity: 'Cantidad', table_subtotal: 'Subtotal',
       order_total: 'Total del pedido', explore: 'Explora', categories_help: 'Organiza el catalogo para que el cliente entienda rapido que puede comprar.',
-      benefits: 'Beneficios', benefits_title: 'Beneficios para vender cuentas streaming',
-      benefit_1: 'Publica cuentas de Netflix, Disney+, Max y mas con fichas claras por plan.', benefit_2: 'Muestra precios por pais y moneda para vender a clientes locales e internacionales.',
-      benefit_3: 'Recibe pedidos completos por WhatsApp con cantidades y productos listos para confirmar.', benefit_4: 'Actualiza tasas, numeros de WhatsApp y catalogo sin tocar codigo.',
+      payment_methods: 'Medios de pago', payment_methods_title: 'Opciones de pago por pais',
+      payment_methods_help: 'Cambia de pais para mostrar medios de pago locales e internacionales.',
       contact: 'Contacto', contact_title: 'Atencion inmediata', contact_help: 'Conecta al cliente con un mensaje precargado para acelerar la compra.',
       contact_cta: 'Hablar por WhatsApp', footer_dev: 'Desarrollado con Bootstrap 5, PHP y MySQL.',
       remove: 'Quitar', msg_empty_cart: 'Tu carrito esta vacio. Anade productos antes de enviar el pedido.',
@@ -129,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
       nav_categories: 'Categorias', nav_products: 'Productos', nav_contact: 'Contacto',
       country_select_label: 'Selecciona tu pais', country_co: '🇨🇴 Colombia', country_es: '🇪🇸 Espana', country_mx: '🇲🇽 Mexico', country_us: '🇺🇸 Estados Unidos',
       cart_nav: 'Carrito', login: 'Iniciar sesion', hero_badge: 'Catalogo digital automatizado',
-      hero_title: 'Combos, cuentas y pantallas listas para vender', hero_subtitle: 'Diseno limpio, visual premium y experiencia rapida para convertir visitas en pedidos.',
+      hero_title: 'Combos, cuentas y pantallas listas para vender', hero_subtitle: 'Pantallas streaming con entrega inmediata, precios claros y atencion directa por WhatsApp.',
       hero_cta_catalog: 'Ver catalogo', hero_cta_whatsapp: 'Pedir por WhatsApp', featured: 'Destacado',
       hero_side_title: 'Experiencia visual moderna', hero_side_text: 'Diseno limpio, elegante y claro con estilo premium.',
       categories: 'Categorias', catalog: 'Catalogo', products_available: 'Productos disponibles',
@@ -141,9 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
       cart_empty: 'Tu carrito esta vacio. Agrega productos para generar tu pedido.',
       table_product: 'Producto', table_unit_price: 'Precio unitario', table_quantity: 'Cantidad', table_subtotal: 'Subtotal',
       order_total: 'Total del pedido', explore: 'Explora', categories_help: 'Organiza el catalogo en bloques simples para que el cliente entienda rapido que puede comprar.',
-      benefits: 'Beneficios', benefits_title: 'Beneficios para vender cuentas streaming',
-      benefit_1: 'Publica cuentas de Netflix, Disney+, Max y mas con fichas claras por plan.', benefit_2: 'Muestra precios por pais y moneda para vender a clientes locales e internacionales.',
-      benefit_3: 'Recibe pedidos completos por WhatsApp con cantidades y productos listos para confirmar.', benefit_4: 'Actualiza tasas, numeros de WhatsApp y catalogo sin tocar codigo.',
+      payment_methods: 'Medios de pago', payment_methods_title: 'Opciones de pago por pais',
+      payment_methods_help: 'Cambia de pais para mostrar medios de pago locales e internacionales.',
       contact: 'Contacto', contact_title: 'Atencion inmediata', contact_help: 'Conecta al cliente con un mensaje precargado para acelerar la compra.',
       contact_cta: 'Hablar por WhatsApp', footer_dev: 'Desarrollado con Bootstrap 5, PHP y MySQL.',
       remove: 'Quitar', msg_empty_cart: 'Tu carrito esta vacio. Agrega productos antes de enviar el pedido.',
@@ -156,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
       nav_categories: 'Categories', nav_products: 'Products', nav_contact: 'Contact',
       country_select_label: 'Select your country', country_co: '🇨🇴 Colombia', country_es: '🇪🇸 Spain', country_mx: '🇲🇽 Mexico', country_us: '🇺🇸 United States',
       cart_nav: 'Cart', login: 'Sign in', hero_badge: 'Automated digital catalog',
-      hero_title: 'Combos, accounts, and screens ready to sell', hero_subtitle: 'Clean premium design and a fast experience to convert visits into orders.',
+      hero_title: 'Combos, accounts, and screens ready to sell', hero_subtitle: 'Streaming screens with instant delivery, clear pricing, and direct WhatsApp support.',
       hero_cta_catalog: 'View catalog', hero_cta_whatsapp: 'Order via WhatsApp', featured: 'Featured',
       hero_side_title: 'Modern visual experience', hero_side_text: 'Clean, bright and premium design with soft transparency.',
       categories: 'Categories', catalog: 'Catalog', products_available: 'Available products',
@@ -168,9 +189,8 @@ document.addEventListener('DOMContentLoaded', () => {
       cart_empty: 'Your cart is empty. Add products to create your order.',
       table_product: 'Product', table_unit_price: 'Unit price', table_quantity: 'Quantity', table_subtotal: 'Subtotal',
       order_total: 'Order total', explore: 'Explore', categories_help: 'Organize your catalog so customers quickly understand what they can buy.',
-      benefits: 'Benefits', benefits_title: 'Benefits for selling streaming accounts',
-      benefit_1: 'Publish Netflix, Disney+, Max and more accounts with clear plan cards.', benefit_2: 'Show prices by country and currency to sell locally and internationally.',
-      benefit_3: 'Receive complete WhatsApp orders with quantities and products ready to confirm.', benefit_4: 'Update rates, WhatsApp numbers, and catalog details without touching code.',
+      payment_methods: 'Payment methods', payment_methods_title: 'Country-based payment options',
+      payment_methods_help: 'Switch country to display local and international payment methods.',
       contact: 'Contact', contact_title: 'Immediate support', contact_help: 'Connect customers with a preloaded message to speed up purchases.',
       contact_cta: 'Chat on WhatsApp', footer_dev: 'Built with Bootstrap 5, PHP, and MySQL.',
       remove: 'Remove', msg_empty_cart: 'Your cart is empty. Add products before sending your order.',
@@ -264,7 +284,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const phone = getWhatsappPhone(countryCode);
 
     countryWhatsappLinks.forEach((link) => {
-      const message = link.dataset.whatsappMessage || '';
+      const fallbackMessage = whatsappMessageByCountry[countryCode] || '';
+      const message = link.dataset.whatsappMessage || fallbackMessage;
       const url = buildWhatsappUrl(phone, message);
       link.href = url || '#';
       link.classList.toggle('disabled', !url);
@@ -275,6 +296,52 @@ document.addEventListener('DOMContentLoaded', () => {
         link.removeAttribute('title');
       }
     });
+  };
+
+  const sanitizePaymentMethodsHtml = (rawHtml) => {
+    const allowedTags = new Set(['I', 'SPAN', 'STRONG', 'B', 'EM', 'SMALL', 'BR', 'P', 'UL', 'OL', 'LI', 'DIV']);
+    const allowedAttrs = new Set(['class', 'title', 'aria-label']);
+
+    const template = document.createElement('template');
+    template.innerHTML = String(rawHtml || '');
+
+    const walk = (node) => {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const element = node;
+
+        if (!allowedTags.has(element.tagName)) {
+          const parent = element.parentNode;
+          if (parent) {
+            while (element.firstChild) {
+              parent.insertBefore(element.firstChild, element);
+            }
+            parent.removeChild(element);
+          }
+          return;
+        }
+
+        Array.from(element.attributes).forEach((attr) => {
+          if (!allowedAttrs.has(attr.name.toLowerCase())) {
+            element.removeAttribute(attr.name);
+          }
+        });
+      }
+
+      Array.from(node.childNodes).forEach((child) => walk(child));
+    };
+
+    Array.from(template.content.childNodes).forEach((child) => walk(child));
+    return template.innerHTML;
+  };
+
+  const updatePaymentMethodsByCountry = (countryCode) => {
+    if (!paymentMethodsContent) {
+      return;
+    }
+
+    const countryText = paymentMethodsByCountry[countryCode] || paymentMethodsByCountry.CO || '';
+    const normalized = String(countryText || '').trim();
+    paymentMethodsContent.innerHTML = sanitizePaymentMethodsHtml(normalized);
   };
 
   const formatPrice = (amount, config) => {
@@ -362,17 +429,29 @@ document.addEventListener('DOMContentLoaded', () => {
     let visibleProducts = 0;
 
     categoryFilterLinks.forEach((link) => {
-      const isVisible = (link.dataset.countryCode || 'CO') === countryCode;
+      const countryCodes = String(link.dataset.countryCodes || link.dataset.countryCode || 'CO')
+        .split(',')
+        .map((code) => code.trim().toUpperCase())
+        .filter(Boolean);
+      const isVisible = countryCodes.includes(countryCode);
       link.hidden = !isVisible;
     });
 
     categoryCards.forEach((card) => {
-      const isVisible = (card.dataset.countryCode || 'CO') === countryCode;
+      const countryCodes = String(card.dataset.countryCodes || card.dataset.countryCode || 'CO')
+        .split(',')
+        .map((code) => code.trim().toUpperCase())
+        .filter(Boolean);
+      const isVisible = countryCodes.includes(countryCode);
       card.hidden = !isVisible;
     });
 
     productItems.forEach((item) => {
-      const isVisible = (item.dataset.countryCode || 'CO') === countryCode;
+      const countryCodes = String(item.dataset.countryCodes || item.dataset.countryCode || 'CO')
+        .split(',')
+        .map((code) => code.trim().toUpperCase())
+        .filter(Boolean);
+      const isVisible = countryCodes.includes(countryCode);
       item.hidden = !isVisible;
       if (isVisible) {
         visibleProducts += 1;
@@ -548,6 +627,7 @@ document.addEventListener('DOMContentLoaded', () => {
     applyCategoryTranslations();
     applyProductTranslations();
     updateCountryWhatsappLinks(selectedCountry);
+    updatePaymentMethodsByCountry(selectedCountry);
     renderCart();
 
     try {

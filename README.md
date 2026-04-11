@@ -11,8 +11,8 @@ Proyecto base desarrollado con **Bootstrap 5, HTML, CSS, JavaScript, PHP y MySQL
 - Tarjetas de productos con botón directo a WhatsApp.
 - Panel administrativo básico para:
   - iniciar sesión
-  - crear categorías por país
-  - crear productos por país
+  - crear categorías para uno o varios países (mínimo 1)
+  - crear productos para uno o varios países (mínimo 1)
   - editar textos generales y WhatsApp
 
 ## Estructura

@@ -73,9 +73,19 @@ function normalize_country_code(?string $countryCode): string
     return array_key_exists($countryCode, $supportedCountries) ? $countryCode : 'CO';
 }
 
+function normalize_country_codes(array $countryCodes): array
+{
+    $normalized = [];
+    foreach ($countryCodes as $countryCode) {
+        $code = normalize_country_code((string) $countryCode);
+        $normalized[$code] = $code;
+    }
+    return array_values($normalized);
+}
+
 function get_categories(PDO $pdo): array
 {
-    $stmt = $pdo->query('SELECT * FROM categories WHERE status = 1 ORDER BY country_code ASC, sort_order ASC, name ASC');
+    $stmt = $pdo->query('SELECT * FROM categories WHERE status = 1 ORDER BY sort_order ASC, name ASC');
     return $stmt->fetchAll();
 }
 

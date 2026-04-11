@@ -15,6 +15,39 @@ $whatsappCo = (string) preg_replace('/\D+/', '', $settings['whatsapp_number_co']
 $whatsappEs = (string) preg_replace('/\D+/', '', $settings['whatsapp_number_es'] ?? $defaultWhatsapp);
 $whatsappMx = (string) preg_replace('/\D+/', '', $settings['whatsapp_number_mx'] ?? $defaultWhatsapp);
 $whatsappUs = (string) preg_replace('/\D+/', '', $settings['whatsapp_number_us'] ?? $defaultWhatsapp);
+$defaultWhatsappMessage = trim((string) ($settings['whatsapp_message_general'] ?? 'Hola, quiero mas informacion sobre el catalogo digital.'));
+$whatsappMessageCo = trim((string) ($settings['whatsapp_message_co'] ?? $defaultWhatsappMessage));
+$whatsappMessageEs = trim((string) ($settings['whatsapp_message_es'] ?? $defaultWhatsappMessage));
+$whatsappMessageMx = trim((string) ($settings['whatsapp_message_mx'] ?? $defaultWhatsappMessage));
+$whatsappMessageUs = trim((string) ($settings['whatsapp_message_us'] ?? 'Hello, I want more information about the digital catalog.'));
+$defaultPaymentMethodsCo = trim((string) <<<TEXT
+🔰MEDIOS DE PAGO COLOMBIA 🔰
+
+🟡NEQUI 3197128850
+🔴DAVIPLATA 3197128850
+⚪MOVII 3197128850
+🟢CLARO PAY 3197128850
+⚫DALE 3197128850
+
+🟥AHORROS DAVIVIENDA
+477500036140
+
+🟨AHORROS BANCOLOMBIA
+91286093448
+
+🟩LULOBANK 477165563567
+
+🟪AHORROS NU BANK 30597840
+
+📌LLAVE NEQUI @3197128850
+TEXT);
+$paymentMethodsByCountry = [
+    'CO' => trim((string) ($settings['payment_methods_co'] ?? $defaultPaymentMethodsCo)),
+    'ES' => trim((string) ($settings['payment_methods_es'] ?? $defaultPaymentMethodsCo)),
+    'MX' => trim((string) ($settings['payment_methods_mx'] ?? $defaultPaymentMethodsCo)),
+    'US' => trim((string) ($settings['payment_methods_us'] ?? $defaultPaymentMethodsCo)),
+];
+$paymentMethodsJson = json_encode($paymentMethodsByCountry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
 require __DIR__ . '/includes/header.php';
 ?>
@@ -22,8 +55,7 @@ require __DIR__ . '/includes/header.php';
 <nav class="navbar navbar-expand-lg sticky-top navbar-light glass-nav">
     <div class="container py-2">
         <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="index.php">
-            <span class="brand-dot"></span>
-            <?= e($settings['site_name'] ?? 'Pixel Play'); ?>
+            <img src="assets/img/logo.png" alt="<?= e($settings['site_name'] ?? 'Pixel Play'); ?>" class="brand-logo">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
             <span class="navbar-toggler-icon"></span>
@@ -47,6 +79,10 @@ require __DIR__ . '/includes/header.php';
                     data-whatsapp-es="<?= e($whatsappEs); ?>"
                     data-whatsapp-mx="<?= e($whatsappMx); ?>"
                     data-whatsapp-us="<?= e($whatsappUs); ?>"
+                    data-whatsapp-message-co="<?= e($whatsappMessageCo); ?>"
+                    data-whatsapp-message-es="<?= e($whatsappMessageEs); ?>"
+                    data-whatsapp-message-mx="<?= e($whatsappMessageMx); ?>"
+                    data-whatsapp-message-us="<?= e($whatsappMessageUs); ?>"
                 >
                     <?php foreach ($supportedCountries as $countryCode => $countryName): ?>
                         <option value="<?= e($countryCode); ?>" data-i18n="country_<?= strtolower($countryCode); ?>"><?= e($countryName); ?></option>
@@ -108,14 +144,13 @@ require __DIR__ . '/includes/header.php';
     <div class="container">
         <div class="hero-full-blurb">
             <h1 class="hero-main-title" data-i18n="hero_title">Combos, cuentas y pantallas listas para vender</h1>
-            <p class="hero-main-subtitle" data-i18n="hero_subtitle">Diseno limpio, visual premium y experiencia rapida para convertir visitas en pedidos.</p>
+            <p class="hero-main-subtitle" data-i18n="hero_subtitle">Pantallas streaming con entrega inmediata, precios claros y atencion directa por WhatsApp.</p>
             <div class="d-flex flex-wrap gap-3 justify-content-center">
                 <a href="#productos" class="btn btn-primary btn-lg rounded-pill px-5" data-i18n="hero_cta_catalog">Ver catalogo</a>
                 <a
                     href="#"
                     target="_blank"
                     class="btn btn-whatsapp btn-lg rounded-pill px-5 js-country-whatsapp-link"
-                    data-whatsapp-message="<?= e($settings['whatsapp_message_general'] ?? 'Hola, quiero mas informacion sobre el catalogo digital.'); ?>"
                 ><i class="bi bi-whatsapp"></i><span data-i18n="hero_cta_whatsapp">Pedir por WhatsApp</span></a>
             </div>
         </div>
@@ -133,10 +168,11 @@ require __DIR__ . '/includes/header.php';
             <div class="filter-pills d-flex flex-wrap gap-2">
                 <a href="index.php#productos" class="btn btn-sm rounded-pill <?= $activeCategory ? 'btn-outline-light' : 'btn-light'; ?> js-category-filter-all" data-i18n="all">Todos</a>
                 <?php foreach ($categories as $category): ?>
+                    <?php $categoryCountryCodes = normalize_country_codes(explode(',', (string) ($category['country_codes'] ?: $category['country_code']))); ?>
                     <a href="?categoria=<?= (int) $category['id']; ?>#productos"
                        class="btn btn-sm rounded-pill js-category-filter <?= $activeCategory === (int) $category['id'] ? 'btn-light' : 'btn-outline-light'; ?>"
                        data-cat-id="<?= (int) $category['id']; ?>"
-                       data-country-code="<?= e($category['country_code']); ?>"
+                       data-country-codes="<?= e(implode(',', $categoryCountryCodes)); ?>"
                        data-cat-field="name"
                        data-original="<?= e($category['name']); ?>">
                         <?= e($category['name']); ?>
@@ -157,8 +193,9 @@ require __DIR__ . '/includes/header.php';
                 $image = $product['image_url'] ?: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&fit=crop&w=900&q=80';
                 $basePriceCop = (int) preg_replace('/\D+/', '', (string) $product['price_label']);
                 $cleanCopLabel = '$' . number_format($basePriceCop, 0, ',', '.');
+                $productCountryCodes = normalize_country_codes(explode(',', (string) ($product['country_codes'] ?: $product['country_code'])));
             ?>
-                <div class="col-md-6 col-xl-4 js-product-item" data-country-code="<?= e($product['country_code']); ?>">
+                <div class="col-md-6 col-xl-4 js-product-item" data-country-codes="<?= e(implode(',', $productCountryCodes)); ?>">
                     <div class="product-card h-100">
                         <div class="product-image-wrap">
                             <img src="<?= e($image); ?>" class="product-image" alt="<?= e($product['name']); ?>">
@@ -278,7 +315,8 @@ require __DIR__ . '/includes/header.php';
         </div>
         <div class="row g-4">
             <?php foreach ($categories as $category): ?>
-                <div class="col-md-6 col-xl-3 js-category-card" data-country-code="<?= e($category['country_code']); ?>">
+                <?php $categoryCountryCodes = normalize_country_codes(explode(',', (string) ($category['country_codes'] ?: $category['country_code']))); ?>
+                <div class="col-md-6 col-xl-3 js-category-card" data-country-codes="<?= e(implode(',', $categoryCountryCodes)); ?>">
                     <a href="?categoria=<?= (int) $category['id']; ?>#productos" class="category-card text-decoration-none d-block h-100">
                         <div class="category-icon"><?= e($category['short_label'] ?: strtoupper(mb_substr($category['name'], 0, 2))); ?></div>
                         <h3 class="h5 text-white"
@@ -303,14 +341,8 @@ require __DIR__ . '/includes/header.php';
         <div class="row g-4 align-items-center">
             <div class="col-lg-6">
                 <div class="glass-panel p-4 p-lg-5 h-100">
-                    <span class="eyebrow" data-i18n="benefits">Beneficios</span>
-                    <h2 class="text-white" data-i18n="benefits_title">Beneficios para vender cuentas streaming</h2>
-                    <ul class="benefits-list">
-                        <li data-i18n="benefit_1">Publica cuentas de Netflix, Disney+, Max y mas con fichas claras por plan.</li>
-                        <li data-i18n="benefit_2">Muestra precios por pais y moneda para vender a clientes locales e internacionales.</li>
-                        <li data-i18n="benefit_3">Recibe pedidos completos por WhatsApp con cantidades y productos listos para confirmar.</li>
-                        <li data-i18n="benefit_4">Actualiza tasas, numeros de WhatsApp y catalogo sin tocar codigo.</li>
-                    </ul>
+                    <span class="eyebrow" data-i18n="payment_methods">Medios de pago</span>
+                    <div id="paymentMethodsContent" class="payment-methods-content"></div>
                 </div>
             </div>
             <div class="col-lg-6" id="contacto">
@@ -322,13 +354,14 @@ require __DIR__ . '/includes/header.php';
                         class="btn btn-whatsapp rounded-pill px-4 js-country-whatsapp-link"
                         target="_blank"
                         href="#"
-                        data-whatsapp-message="<?= e($settings['whatsapp_message_general'] ?? 'Hola, quiero mas informacion sobre el catalogo digital.'); ?>"
                     ><i class="bi bi-whatsapp"></i><span data-i18n="contact_cta">Hablar por WhatsApp</span></a>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+<script type="application/json" id="paymentMethodsByCountryData"><?= $paymentMethodsJson ? str_replace('</', '<\/', $paymentMethodsJson) : '{}'; ?></script>
 
 <footer class="footer py-4">
     <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">

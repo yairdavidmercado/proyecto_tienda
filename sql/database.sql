@@ -21,6 +21,7 @@ CREATE TABLE categories (
     short_label VARCHAR(8) DEFAULT NULL,
     description TEXT DEFAULT NULL,
     country_code CHAR(2) NOT NULL DEFAULT 'CO',
+    country_codes VARCHAR(64) NOT NULL DEFAULT 'CO',
     sort_order INT NOT NULL DEFAULT 0,
     status TINYINT(1) NOT NULL DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -30,6 +31,7 @@ CREATE TABLE products (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     category_id INT UNSIGNED NOT NULL,
     country_code CHAR(2) NOT NULL DEFAULT 'CO',
+    country_codes VARCHAR(64) NOT NULL DEFAULT 'CO',
     name VARCHAR(150) NOT NULL,
     short_description TEXT DEFAULT NULL,
     price_label VARCHAR(100) NOT NULL,
@@ -49,9 +51,9 @@ CREATE TABLE settings (
 INSERT INTO users (name, email, password, status) VALUES
 ('Administrador', 'admin@demo.com', '$2y$12$P0.ok8SjohrfOeuwBZKj7eTHWnw0PHEcSBD2IXbporwdLoBx0dlLi', 1);
 
-INSERT INTO categories (name, short_label, description, country_code, sort_order, status) VALUES
-('Combos', 'COM', 'Combos de plataformas digitales listos para vender con diferentes niveles y precios.', 'CO', 1, 1),
-('Pantallas individuales', 'PI', 'Categoría lista para publicar accesos por pantalla o perfil individual.', 'CO', 2, 1);
+INSERT INTO categories (name, short_label, description, country_code, country_codes, sort_order, status) VALUES
+('Combos', 'COM', 'Combos de plataformas digitales listos para vender con diferentes niveles y precios.', 'CO', 'CO', 1, 1),
+('Pantallas individuales', 'PI', 'Categoría lista para publicar accesos por pantalla o perfil individual.', 'CO', 'CO', 2, 1);
 
 INSERT INTO products (category_id, country_code, name, short_description, price_label, image_url, featured, status) VALUES
 (1, 'CO', 'Combo Especial', 'Incluye Netflix y ViX. Opción de entrada para clientes que buscan un combo económico y fácil de vender.', '$15.000', 'assets/img/products/combo-premium.svg', 0, 1),
@@ -100,15 +102,22 @@ INSERT INTO products (category_id, country_code, name, short_description, price_
 
 INSERT INTO settings (setting_key, setting_value) VALUES
 ('site_name', 'Pixel Play Store'),
-('site_description', 'Catálogo digital moderno con pedidos rápidos por WhatsApp.'),
+/* ('site_description', 'Catálogo digital moderno con pedidos rápidos por WhatsApp.'),
 ('hero_title', 'Combos, cuentas y pantallas en una vitrina premium'),
-('hero_subtitle', 'Una página moderna, limpia y responsiva para mostrar productos digitales y convertir visitas en ventas.'),
+('hero_subtitle', 'Pantallas streaming con entrega inmediata, precios claros y atencion directa por WhatsApp.'), */
 ('whatsapp_number', '573001234567'),
 ('whatsapp_number_co', '573001234567'),
 ('whatsapp_number_es', '34600111222'),
 ('whatsapp_number_mx', '5215512345678'),
 ('whatsapp_number_us', '12025550123'),
-('whatsapp_message_general', 'Hola, quiero información sobre los productos digitales disponibles.'),
+('whatsapp_message_co', 'Hola, quiero informacion sobre las pantallas streaming disponibles para Colombia.'),
+('whatsapp_message_es', 'Hola, quiero informacion sobre las pantallas streaming disponibles para Espana.'),
+('whatsapp_message_mx', 'Hola, quiero informacion sobre las pantallas streaming disponibles para Mexico.'),
+('whatsapp_message_us', 'Hello, I want information about the available streaming screens for the United States.'),
+('payment_methods_co', '🔰MEDIOS DE PAGO COLOMBIA 🔰\n\n🟡NEQUI 3197128850\n🔴DAVIPLATA 3197128850\n⚪MOVII 3197128850\n🟢CLARO PAY 3197128850\n⚫DALE 3197128850\n\n🟥AHORROS DAVIVIENDA\n477500036140\n\n🟨AHORROS BANCOLOMBIA\n91286093448\n\n🟩LULOBANK 477165563567\n\n🟪AHORROS NU BANK 30597840\n\n📌LLAVE NEQUI @3197128850'),
+('payment_methods_es', 'Configura aqui los medios de pago para Espana.'),
+('payment_methods_mx', 'Configura aqui los medios de pago para Mexico.'),
+('payment_methods_us', 'Configure payment methods for the United States here.'),
 ('rate_cop_to_eur', '0.00023'),
 ('rate_cop_to_mxn', '0.0044'),
 ('rate_cop_to_usd', '0.00026');

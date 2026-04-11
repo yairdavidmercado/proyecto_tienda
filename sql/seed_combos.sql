@@ -1,19 +1,71 @@
 USE tienda_digital;
 
-ALTER TABLE categories ADD COLUMN IF NOT EXISTS country_code CHAR(2) NOT NULL DEFAULT 'CO' AFTER description;
-ALTER TABLE products ADD COLUMN IF NOT EXISTS country_code CHAR(2) NOT NULL DEFAULT 'CO' AFTER category_id;
+SET @db_name := DATABASE();
 
-UPDATE categories SET country_code = 'CO' WHERE country_code IS NULL OR country_code = '';
-UPDATE products SET country_code = 'CO' WHERE country_code IS NULL OR country_code = '';
+SET @sql := IF(
+  (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = @db_name AND TABLE_NAME = 'categories' AND COLUMN_NAME = 'country_code') = 0,
+  'ALTER TABLE categories ADD COLUMN country_code CHAR(2) NOT NULL DEFAULT ''CO'' AFTER description',
+  'SELECT 1'
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
 
-INSERT INTO categories (name, short_label, description, country_code, sort_order, status)
-SELECT 'Combos', 'COM', 'Combos de plataformas digitales listos para vender con diferentes niveles y precios.', 'CO', 1, 1
+SET @sql := IF(
+  (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = @db_name AND TABLE_NAME = 'categories' AND COLUMN_NAME = 'country_codes') = 0,
+  'ALTER TABLE categories ADD COLUMN country_codes VARCHAR(64) NOT NULL DEFAULT ''CO'' AFTER country_code',
+  'SELECT 1'
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql := IF(
+  (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = @db_name AND TABLE_NAME = 'products' AND COLUMN_NAME = 'country_code') = 0,
+  'ALTER TABLE products ADD COLUMN country_code CHAR(2) NOT NULL DEFAULT ''CO'' AFTER category_id',
+  'SELECT 1'
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql := IF(
+  (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = @db_name AND TABLE_NAME = 'products' AND COLUMN_NAME = 'country_codes') = 0,
+  'ALTER TABLE products ADD COLUMN country_codes VARCHAR(64) NOT NULL DEFAULT ''CO'' AFTER country_code',
+  'SELECT 1'
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+UPDATE categories
+SET country_code = 'CO'
+WHERE id > 0
+  AND (country_code IS NULL OR country_code = '');
+
+UPDATE categories
+SET country_codes = country_code
+WHERE id > 0
+  AND (country_codes IS NULL OR country_codes = '');
+
+UPDATE products
+SET country_code = 'CO'
+WHERE id > 0
+  AND (country_code IS NULL OR country_code = '');
+
+UPDATE products
+SET country_codes = country_code
+WHERE id > 0
+  AND (country_codes IS NULL OR country_codes = '');
+
+INSERT INTO categories (name, short_label, description, country_code, country_codes, sort_order, status)
+SELECT 'Combos', 'COM', 'Combos de plataformas digitales listos para vender con diferentes niveles y precios.', 'CO', 'CO', 1, 1
 WHERE NOT EXISTS (
   SELECT 1 FROM categories WHERE name = 'Combos' AND country_code = 'CO'
 );
 
-INSERT INTO categories (name, short_label, description, country_code, sort_order, status)
-SELECT 'Pantallas individuales', 'PI', 'Categoría lista para publicar accesos por pantalla o perfil individual.', 'CO', 2, 1
+INSERT INTO categories (name, short_label, description, country_code, country_codes, sort_order, status)
+SELECT 'Pantallas individuales', 'PI', 'Categoría lista para publicar accesos por pantalla o perfil individual.', 'CO', 'CO', 2, 1
 WHERE NOT EXISTS (
   SELECT 1 FROM categories WHERE name = 'Pantallas individuales' AND country_code = 'CO'
 );

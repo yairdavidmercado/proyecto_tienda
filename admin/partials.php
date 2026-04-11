@@ -19,11 +19,11 @@ function admin_header(string $title): void {
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="../assets/css/style.css">
     </head>
-    <body>
+    <body class="admin-site">
     <div class="admin-shell d-lg-flex">
         <aside class="sidebar p-4">
             <a href="dashboard.php" class="navbar-brand fw-bold text-white text-decoration-none d-inline-flex align-items-center gap-2 mb-4">
-                <span class="brand-dot"></span> Admin
+                <img src="../assets/img/logo.png" alt="Admin" class="brand-logo">
             </a>
             <nav class="nav flex-column gap-2">
                 <a class="nav-link <?= basename($_SERVER['PHP_SELF']) === 'dashboard.php' ? 'active' : ''; ?>" href="dashboard.php">Resumen</a>
