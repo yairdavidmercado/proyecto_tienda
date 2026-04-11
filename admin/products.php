@@ -1,20 +1,35 @@
 <?php
 require __DIR__ . '/partials.php';
 
+$supportedCountries = get_supported_countries();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? 'create';
     if ($action === 'create') {
-        $stmt = $pdo->prepare('INSERT INTO products (category_id, name, short_description, price_label, image_url, featured, status) VALUES (?, ?, ?, ?, ?, ?, ?)');
-        $stmt->execute([
-            (int) ($_POST['category_id'] ?? 0),
-            trim($_POST['name'] ?? ''),
-            trim($_POST['short_description'] ?? ''),
-            trim($_POST['price_label'] ?? ''),
-            trim($_POST['image_url'] ?? ''),
-            isset($_POST['featured']) ? 1 : 0,
-            isset($_POST['status']) ? 1 : 0,
-        ]);
-        flash_message('success', 'Producto creado correctamente.');
+        $categoryId = (int) ($_POST['category_id'] ?? 0);
+        $countryCode = normalize_country_code($_POST['country_code'] ?? 'CO');
+        $categoryStmt = $pdo->prepare('SELECT id, country_code FROM categories WHERE id = ?');
+        $categoryStmt->execute([$categoryId]);
+        $category = $categoryStmt->fetch();
+
+        if (!$category) {
+            flash_message('danger', 'La categoría seleccionada no existe.');
+        } elseif (($category['country_code'] ?? '') !== $countryCode) {
+            flash_message('danger', 'La categoría no pertenece al país seleccionado.');
+        } else {
+            $stmt = $pdo->prepare('INSERT INTO products (category_id, country_code, name, short_description, price_label, image_url, featured, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+            $stmt->execute([
+                $categoryId,
+                $countryCode,
+                trim($_POST['name'] ?? ''),
+                trim($_POST['short_description'] ?? ''),
+                trim($_POST['price_label'] ?? ''),
+                trim($_POST['image_url'] ?? ''),
+                isset($_POST['featured']) ? 1 : 0,
+                isset($_POST['status']) ? 1 : 0,
+            ]);
+            flash_message('success', 'Producto creado correctamente.');
+        }
     }
 
     if ($action === 'delete') {
@@ -27,8 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-$categories = $pdo->query('SELECT id, name FROM categories WHERE status = 1 ORDER BY sort_order ASC, name ASC')->fetchAll();
-$products = $pdo->query('SELECT p.*, c.name AS category_name FROM products p LEFT JOIN categories c ON c.id = p.category_id ORDER BY p.id DESC')->fetchAll();
+$categories = $pdo->query('SELECT id, name, country_code FROM categories WHERE status = 1 ORDER BY country_code ASC, sort_order ASC, name ASC')->fetchAll();
+$products = $pdo->query('SELECT p.*, c.name AS category_name FROM products p LEFT JOIN categories c ON c.id = p.category_id ORDER BY p.country_code ASC, p.id DESC')->fetchAll();
 admin_header('Productos');
 ?>
 <div class="row g-4">
@@ -38,11 +53,19 @@ admin_header('Productos');
             <form method="post" class="d-grid gap-3">
                 <input type="hidden" name="action" value="create">
                 <div>
+                    <label class="form-label text-white">País</label>
+                    <select name="country_code" class="form-select" required>
+                        <?php foreach ($supportedCountries as $countryCode => $countryName): ?>
+                            <option value="<?= e($countryCode); ?>"><?= e($countryCode . ' - ' . $countryName); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div>
                     <label class="form-label text-white">Categoría</label>
                     <select name="category_id" class="form-select" required>
                         <option value="">Seleccione</option>
                         <?php foreach ($categories as $category): ?>
-                            <option value="<?= (int) $category['id']; ?>"><?= e($category['name']); ?></option>
+                            <option value="<?= (int) $category['id']; ?>"><?= e('[' . $category['country_code'] . '] ' . $category['name']); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -84,6 +107,7 @@ admin_header('Productos');
                         <tr class="text-secondary">
                             <th>Producto</th>
                             <th>Categoría</th>
+                            <th>País</th>
                             <th>Precio</th>
                             <th></th>
                         </tr>
@@ -96,6 +120,7 @@ admin_header('Productos');
                                 <div class="small text-secondary"><?= e($product['short_description']); ?></div>
                             </td>
                             <td><?= e($product['category_name']); ?></td>
+                            <td><?= e($product['country_code']); ?></td>
                             <td><?= e($product['price_label']); ?></td>
                             <td class="text-end">
                                 <form method="post" onsubmit="return confirm('¿Eliminar este producto?');">

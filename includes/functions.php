@@ -56,21 +56,38 @@ function get_settings(PDO $pdo): array
     return $settings;
 }
 
+function get_supported_countries(): array
+{
+    return [
+        'CO' => 'Colombia',
+        'ES' => 'Espana',
+        'MX' => 'Mexico',
+        'US' => 'Estados Unidos',
+    ];
+}
+
+function normalize_country_code(?string $countryCode): string
+{
+    $countryCode = strtoupper(trim((string) $countryCode));
+    $supportedCountries = get_supported_countries();
+    return array_key_exists($countryCode, $supportedCountries) ? $countryCode : 'CO';
+}
+
 function get_categories(PDO $pdo): array
 {
-    $stmt = $pdo->query('SELECT * FROM categories WHERE status = 1 ORDER BY sort_order ASC, name ASC');
+    $stmt = $pdo->query('SELECT * FROM categories WHERE status = 1 ORDER BY country_code ASC, sort_order ASC, name ASC');
     return $stmt->fetchAll();
 }
 
 function get_products(PDO $pdo, ?int $categoryId = null): array
 {
     if ($categoryId) {
-        $stmt = $pdo->prepare('SELECT p.*, c.name AS category_name FROM products p INNER JOIN categories c ON c.id = p.category_id WHERE p.status = 1 AND c.status = 1 AND p.category_id = ? ORDER BY p.featured DESC, p.id DESC');
+        $stmt = $pdo->prepare('SELECT p.*, c.name AS category_name, c.country_code AS category_country_code FROM products p INNER JOIN categories c ON c.id = p.category_id WHERE p.status = 1 AND c.status = 1 AND p.category_id = ? ORDER BY p.featured DESC, p.id DESC');
         $stmt->execute([$categoryId]);
         return $stmt->fetchAll();
     }
 
-    $stmt = $pdo->query('SELECT p.*, c.name AS category_name FROM products p INNER JOIN categories c ON c.id = p.category_id WHERE p.status = 1 AND c.status = 1 ORDER BY p.featured DESC, p.id DESC');
+    $stmt = $pdo->query('SELECT p.*, c.name AS category_name, c.country_code AS category_country_code FROM products p INNER JOIN categories c ON c.id = p.category_id WHERE p.status = 1 AND c.status = 1 ORDER BY p.country_code ASC, p.featured DESC, p.id DESC');
     return $stmt->fetchAll();
 }
 

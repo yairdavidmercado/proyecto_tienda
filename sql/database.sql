@@ -20,6 +20,7 @@ CREATE TABLE categories (
     name VARCHAR(120) NOT NULL,
     short_label VARCHAR(8) DEFAULT NULL,
     description TEXT DEFAULT NULL,
+    country_code CHAR(2) NOT NULL DEFAULT 'CO',
     sort_order INT NOT NULL DEFAULT 0,
     status TINYINT(1) NOT NULL DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -28,6 +29,7 @@ CREATE TABLE categories (
 CREATE TABLE products (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     category_id INT UNSIGNED NOT NULL,
+    country_code CHAR(2) NOT NULL DEFAULT 'CO',
     name VARCHAR(150) NOT NULL,
     short_description TEXT DEFAULT NULL,
     price_label VARCHAR(100) NOT NULL,
@@ -47,17 +49,54 @@ CREATE TABLE settings (
 INSERT INTO users (name, email, password, status) VALUES
 ('Administrador', 'admin@demo.com', '$2y$12$P0.ok8SjohrfOeuwBZKj7eTHWnw0PHEcSBD2IXbporwdLoBx0dlLi', 1);
 
-INSERT INTO categories (name, short_label, description, sort_order, status) VALUES
-('Combos por pantallas', 'CP', 'Paquetes pensados para clientes que compran acceso por perfil o pantalla.', 1, 1),
-('Combos por cuentas', 'CC', 'Opciones completas para quienes necesitan cuentas listas para usar.', 2, 1),
-('Pantallas individuales', 'PI', 'Productos unitarios para venta rápida y ticket de entrada bajo.', 3, 1),
-('Cuentas completas', 'CT', 'Planes full para clientes que prefieren control total del acceso.', 4, 1);
+INSERT INTO categories (name, short_label, description, country_code, sort_order, status) VALUES
+('Combos', 'COM', 'Combos de plataformas digitales listos para vender con diferentes niveles y precios.', 'CO', 1, 1),
+('Pantallas individuales', 'PI', 'Categoría lista para publicar accesos por pantalla o perfil individual.', 'CO', 2, 1);
 
-INSERT INTO products (category_id, name, short_description, price_label, image_url, featured, status) VALUES
-(1, 'Combo Streaming Plus', 'Incluye varias plataformas en un solo paquete con entrega rápida.', '$35.000 / mes', 'https://images.unsplash.com/photo-1586892478025-2b5472316f22?auto=format&fit=crop&w=900&q=80', 1, 1),
-(2, 'Cuenta Full Premium', 'Acceso completo ideal para usuarios que desean una cuenta dedicada.', '$52.000 / mes', 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80', 1, 1),
-(3, 'Pantalla Individual Pro', 'Alternativa económica y clara para compras inmediatas.', '$14.000 / mes', 'https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=900&q=80', 0, 1),
-(4, 'Cuenta Completa Max', 'Cuenta completa con enfoque en continuidad y mayor valor percibido.', '$65.000 / mes', 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80', 0, 1);
+INSERT INTO products (category_id, country_code, name, short_description, price_label, image_url, featured, status) VALUES
+(1, 'CO', 'Combo Especial', 'Incluye Netflix y ViX. Opción de entrada para clientes que buscan un combo económico y fácil de vender.', '$15.000', 'assets/img/products/combo-premium.svg', 0, 1),
+(1, 'CO', 'Combo Estándar 1', 'Incluye Netflix, HBO Max y ViX. Alternativa balanceada para ofrecer más contenido a un precio accesible.', '$18.000', 'assets/img/products/combo-premium.svg', 0, 1),
+(1, 'CO', 'Combo Estándar 2', 'Incluye Netflix, Prime Video y ViX. Pensado para clientes que priorizan series, películas y variedad.', '$19.000', 'assets/img/products/combo-premium.svg', 0, 1),
+(1, 'CO', 'Combo Básico 1', 'Incluye Netflix, Crunchyroll y Paramount+. Ideal para combinar entretenimiento general con anime.', '$19.000', 'assets/img/products/combo-premium.svg', 0, 1),
+(1, 'CO', 'Combo Básico 2', 'Incluye Netflix, ChatGPT y ViX. Mezcla entretenimiento y productividad en un mismo paquete.', '$28.000', 'assets/img/products/combo-premium.svg', 0, 1),
+(1, 'CO', 'Combo Ideal 1', 'Incluye Netflix, Disney+ y Paramount+. Recomendado para hogares que buscan contenido familiar y estrenos.', '$22.000', 'assets/img/products/combo-premium.svg', 0, 1),
+(1, 'CO', 'Combo Ideal 2', 'Incluye Netflix, HBO Max, Prime Video y Paramount+. Combo completo para clientes que quieren más catálogo sin saltar al plan más alto.', '$22.000', 'assets/img/products/combo-premium.svg', 0, 1),
+(1, 'CO', 'Combo Plus', 'Incluye Netflix, HBO Max, Prime Video, Disney+, Paramount+ y ViX. Uno de los combos más fuertes y atractivos del catálogo.', '$29.000', 'assets/img/products/combo-premium.svg', 1, 1),
+(1, 'CO', 'Combo Perfecto', 'Incluye Netflix, HBO Max, Prime Video, Disney+, Paramount+, ViX, Crunchyroll y un servicio premium adicional. Diseñado para una oferta de alto valor.', '$35.000', 'assets/img/products/combo-premium.svg', 1, 1),
+(1, 'CO', 'Combo Extra', 'Incluye Netflix, ChatGPT, Canva, CapCut y ViX. Orientado a clientes que buscan entretenimiento y herramientas digitales.', '$50.000', 'assets/img/products/combo-premium.svg', 1, 1),
+(1, 'CO', 'Combo Extra 2', 'Incluye Netflix, Spotify y ViX. Ideal para vender entretenimiento de video y música en una sola oferta.', '$23.000', 'assets/img/products/combo-premium.svg', 0, 1),
+(1, 'CO', 'Combo Extra 3', 'Incluye Netflix, HBO Max, Crunchyroll y ViX. Una combinación atractiva para público general y fans del anime.', '$23.000', 'assets/img/products/combo-premium.svg', 0, 1),
+(1, 'CO', 'Combo Extra 4', 'Incluye Netflix, YouTube y ViX. Opción simple y comercial para clientes que consumen contenido diario.', '$23.000', 'assets/img/products/combo-premium.svg', 0, 1),
+(1, 'CO', 'Combo Extra 5', 'Incluye ViX, Paramount+ y un servicio premium adicional. Propuesta compacta para ampliar el catálogo con ticket bajo.', '$18.000', 'assets/img/products/combo-premium.svg', 0, 1),
+(2, 'CO', 'Netflix', 'Pantalla individual de Netflix para clientes que buscan acceso rápido y una opción de alta rotación.', '$15.000', 'assets/img/products/pantalla-individual.svg', 1, 1),
+(2, 'CO', 'HBO Max', 'Pantalla individual de HBO Max con catálogo de series y películas premium.', '$8.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'Prime Video', 'Acceso individual a Prime Video como opción económica y fácil de vender.', '$9.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'ViX', 'Pantalla individual de ViX para clientes interesados en contenido latino y deportivo.', '$7.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'Paramount+', 'Acceso individual a Paramount+ ideal para complementar otros servicios del catálogo.', '$8.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'Deezer Mes', 'Suscripción mensual de Deezer para clientes que buscan música en streaming.', '$10.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'Deezer Año', 'Plan anual de Deezer con mejor percepción de ahorro para el cliente final.', '$70.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'Spotify Mes', 'Suscripción mensual de Spotify con entrega rápida para venta recurrente.', '$14.000', 'assets/img/products/pantalla-individual.svg', 1, 1),
+(2, 'CO', 'Spotify 3 Meses', 'Plan de Spotify por tres meses pensado para ofrecer mejor valor frente al plan mensual.', '$35.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'Spotify Año', 'Suscripción anual de Spotify para clientes que buscan estabilidad y ahorro.', '$90.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'Disney Premium', 'Acceso premium de Disney para clientes interesados en películas, series y contenido familiar.', '$14.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'Disney 2 ESPN', 'Plan combinado de Disney con ESPN como alternativa atractiva para hogares y aficionados al deporte.', '$10.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'Canva Mes', 'Suscripción mensual de Canva para diseño rápido y uso personal o comercial.', '$20.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'Canva Año', 'Plan anual de Canva con mejor ticket para clientes que usan diseño de forma continua.', '$70.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'ChatGPT Mes', 'Acceso mensual a ChatGPT orientado a estudio, trabajo y productividad.', '$20.000', 'assets/img/products/pantalla-individual.svg', 1, 1),
+(2, 'CO', 'CapCut Mes', 'Suscripción mensual de CapCut ideal para edición de video y creación de contenido.', '$25.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'Gemini Mes', 'Acceso mensual a Gemini para clientes que buscan herramientas de inteligencia artificial.', '$25.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'Gemini Año', 'Plan anual de Gemini orientado a usuarios frecuentes de IA.', '$120.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'Jellyfin Mes', 'Acceso mensual a Jellyfin como opción digital especializada para clientes recurrentes.', '$22.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'Jellyfin Cuenta 3 Dispositivos', 'Cuenta Jellyfin para tres dispositivos, pensada para compartir en hogar o grupo pequeño.', '$40.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'FlujoTV Mes', 'Suscripción mensual de FlujoTV para clientes que buscan contenido en streaming con fácil renovación.', '$22.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'FlujoTV Cuenta 3 Dispositivos', 'Cuenta de FlujoTV para tres dispositivos con mejor relación precio-beneficio.', '$35.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'Win Mes', 'Acceso mensual a Win ideal para clientes interesados en contenido deportivo.', '$22.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'DGO Mes con Win', 'Plan mensual de DGO con Win para una oferta más completa orientada a deporte y entretenimiento.', '$40.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'DGO sin Win', 'Plan mensual de DGO sin Win como alternativa más económica dentro del catálogo.', '$30.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'Porhub Mes', 'Acceso mensual a la plataforma indicada en tu catálogo con venta de renovación periódica.', '$18.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'YouTube Mes', 'Suscripción mensual de YouTube para clientes que prefieren contenido sin interrupciones.', '$14.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'Office 365 Año', 'Licencia anual de Office 365 orientada a estudio, oficina y trabajo remoto.', '$50.000', 'assets/img/products/pantalla-individual.svg', 0, 1),
+(2, 'CO', 'Office de por Vida', 'Licencia permanente de Office como producto de mayor ticket en la categoría.', '$170.000', 'assets/img/products/pantalla-individual.svg', 1, 1);
 
 INSERT INTO settings (setting_key, setting_value) VALUES
 ('site_name', 'Pixel Play Store'),

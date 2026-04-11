@@ -1,14 +1,17 @@
 <?php
 require __DIR__ . '/partials.php';
 
+$supportedCountries = get_supported_countries();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? 'create';
     if ($action === 'create') {
-        $stmt = $pdo->prepare('INSERT INTO categories (name, short_label, description, sort_order, status) VALUES (?, ?, ?, ?, ?)');
+        $stmt = $pdo->prepare('INSERT INTO categories (name, short_label, description, country_code, sort_order, status) VALUES (?, ?, ?, ?, ?, ?)');
         $stmt->execute([
             trim($_POST['name'] ?? ''),
             trim($_POST['short_label'] ?? ''),
             trim($_POST['description'] ?? ''),
+            normalize_country_code($_POST['country_code'] ?? 'CO'),
             (int) ($_POST['sort_order'] ?? 0),
             isset($_POST['status']) ? 1 : 0,
         ]);
@@ -47,6 +50,14 @@ admin_header('Categorías');
                     <textarea name="description" class="form-control" rows="4"></textarea>
                 </div>
                 <div>
+                    <label class="form-label text-white">País</label>
+                    <select name="country_code" class="form-select" required>
+                        <?php foreach ($supportedCountries as $countryCode => $countryName): ?>
+                            <option value="<?= e($countryCode); ?>"><?= e($countryCode . ' - ' . $countryName); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div>
                     <label class="form-label text-white">Orden</label>
                     <input type="number" name="sort_order" class="form-control" value="0">
                 </div>
@@ -66,6 +77,7 @@ admin_header('Categorías');
                         <tr class="text-secondary">
                             <th>Nombre</th>
                             <th>Etiqueta</th>
+                            <th>País</th>
                             <th>Orden</th>
                             <th>Estado</th>
                             <th></th>
@@ -76,6 +88,7 @@ admin_header('Categorías');
                         <tr>
                             <td><?= e($category['name']); ?></td>
                             <td><?= e($category['short_label']); ?></td>
+                            <td><?= e($category['country_code']); ?></td>
                             <td><?= (int) $category['sort_order']; ?></td>
                             <td><?= (int) $category['status'] === 1 ? 'Activa' : 'Inactiva'; ?></td>
                             <td class="text-end">

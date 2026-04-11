@@ -4,6 +4,7 @@ require __DIR__ . '/includes/functions.php';
 
 $settings = get_settings($pdo);
 $categories = get_categories($pdo);
+$supportedCountries = get_supported_countries();
 $activeCategory = isset($_GET['categoria']) ? (int) $_GET['categoria'] : null;
 $products = get_products($pdo, $activeCategory ?: null);
 $rateCopToEur = isset($settings['rate_cop_to_eur']) && is_numeric($settings['rate_cop_to_eur']) ? (float) $settings['rate_cop_to_eur'] : 0.00023;
@@ -47,10 +48,9 @@ require __DIR__ . '/includes/header.php';
                     data-whatsapp-mx="<?= e($whatsappMx); ?>"
                     data-whatsapp-us="<?= e($whatsappUs); ?>"
                 >
-                    <option value="CO" data-i18n="country_co">🇨🇴 Colombia</option>
-                    <option value="ES" data-i18n="country_es">🇪🇸 Espana</option>
-                    <option value="MX" data-i18n="country_mx">🇲🇽 Mexico</option>
-                    <option value="US" data-i18n="country_us">🇺🇸 Estados Unidos</option>
+                    <?php foreach ($supportedCountries as $countryCode => $countryName): ?>
+                        <option value="<?= e($countryCode); ?>" data-i18n="country_<?= strtolower($countryCode); ?>"><?= e($countryName); ?></option>
+                    <?php endforeach; ?>
                 </select>
                 <a href="#carrito" id="openCartBtn" class="btn btn-outline-light rounded-pill px-3 position-relative">
                     <span data-i18n="cart_nav">Carrito</span>
@@ -131,11 +131,12 @@ require __DIR__ . '/includes/header.php';
                 <p class="text-secondary mb-0" data-i18n="products_help">Selecciona cantidades y agrega al carrito para enviar un pedido completo.</p>
             </div>
             <div class="filter-pills d-flex flex-wrap gap-2">
-                <a href="index.php#productos" class="btn btn-sm rounded-pill <?= $activeCategory ? 'btn-outline-light' : 'btn-light'; ?>" data-i18n="all">Todos</a>
+                <a href="index.php#productos" class="btn btn-sm rounded-pill <?= $activeCategory ? 'btn-outline-light' : 'btn-light'; ?> js-category-filter-all" data-i18n="all">Todos</a>
                 <?php foreach ($categories as $category): ?>
                     <a href="?categoria=<?= (int) $category['id']; ?>#productos"
-                       class="btn btn-sm rounded-pill <?= $activeCategory === (int) $category['id'] ? 'btn-light' : 'btn-outline-light'; ?>"
+                       class="btn btn-sm rounded-pill js-category-filter <?= $activeCategory === (int) $category['id'] ? 'btn-light' : 'btn-outline-light'; ?>"
                        data-cat-id="<?= (int) $category['id']; ?>"
+                       data-country-code="<?= e($category['country_code']); ?>"
                        data-cat-field="name"
                        data-original="<?= e($category['name']); ?>">
                         <?= e($category['name']); ?>
@@ -144,22 +145,20 @@ require __DIR__ . '/includes/header.php';
             </div>
         </div>
 
-        <div class="row g-4">
-            <?php if (!$products): ?>
-                <div class="col-12">
-                    <div class="empty-state glass-panel p-5 text-center">
-                        <h3 class="text-white" data-i18n="no_products">No hay productos en esta categoria</h3>
-                        <p class="text-secondary mb-0" data-i18n="no_products_help">Agrega productos desde el panel administrativo.</p>
-                    </div>
+        <div class="row g-4" id="productsGrid">
+            <div class="col-12" id="productsEmptyState"<?= $products ? ' style="display:none;"' : ''; ?>>
+                <div class="empty-state glass-panel p-5 text-center">
+                    <h3 class="text-white" data-i18n="no_products">No hay productos en esta categoria</h3>
+                    <p class="text-secondary mb-0" data-i18n="no_products_help">Agrega productos desde el panel administrativo.</p>
                 </div>
-            <?php endif; ?>
+            </div>
 
             <?php foreach ($products as $product):
                 $image = $product['image_url'] ?: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&fit=crop&w=900&q=80';
                 $basePriceCop = (int) preg_replace('/\D+/', '', (string) $product['price_label']);
                 $cleanCopLabel = '$' . number_format($basePriceCop, 0, ',', '.');
             ?>
-                <div class="col-md-6 col-xl-4">
+                <div class="col-md-6 col-xl-4 js-product-item" data-country-code="<?= e($product['country_code']); ?>">
                     <div class="product-card h-100">
                         <div class="product-image-wrap">
                             <img src="<?= e($image); ?>" class="product-image" alt="<?= e($product['name']); ?>">
@@ -279,7 +278,7 @@ require __DIR__ . '/includes/header.php';
         </div>
         <div class="row g-4">
             <?php foreach ($categories as $category): ?>
-                <div class="col-md-6 col-xl-3">
+                <div class="col-md-6 col-xl-3 js-category-card" data-country-code="<?= e($category['country_code']); ?>">
                     <a href="?categoria=<?= (int) $category['id']; ?>#productos" class="category-card text-decoration-none d-block h-100">
                         <div class="category-icon"><?= e($category['short_label'] ?: strtoupper(mb_substr($category['name'], 0, 2))); ?></div>
                         <h3 class="h5 text-white"

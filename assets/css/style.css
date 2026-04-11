@@ -84,26 +84,27 @@ body {
     object-position: center;
     filter: brightness(.52);
 }
-.hero-slide-caption {
+.carousel-caption.hero-slide-caption {
     top: 50%;
     bottom: auto;
     left: 8%;
     right: 8%;
     transform: translateY(-50%);
     text-align: center;
+    color: #fff !important;
 }
-.slide-eyebrow {
+.carousel-caption.hero-slide-caption .slide-eyebrow {
     display: inline-block;
     text-transform: uppercase;
     letter-spacing: .18em;
     font-size: .78rem;
-    color: rgba(255,255,255,.75);
+    color: #fff !important;
     margin-bottom: .65rem;
 }
-.hero-slide-caption h2 {
+.carousel-caption.hero-slide-caption h2 {
     font-size: clamp(1.7rem, 4vw, 2.9rem);
     font-weight: 800;
-    color: #fff;
+    color: #fff !important;
     text-shadow: 0 2px 14px rgba(0,0,0,.28);
     letter-spacing: -.02em;
     margin-bottom: .8rem;

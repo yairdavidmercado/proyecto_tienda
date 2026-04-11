@@ -10,6 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const countrySelector = document.querySelector('#countrySelector');
   const priceTags = document.querySelectorAll('.js-product-price');
   const addButtons = document.querySelectorAll('.js-add-to-cart');
+  const categoryFilterLinks = document.querySelectorAll('.js-category-filter');
+  const categoryCards = document.querySelectorAll('.js-category-card');
+  const productItems = document.querySelectorAll('.js-product-item');
+  const productsEmptyState = document.querySelector('#productsEmptyState');
   const cartItemsBody = document.querySelector('#cartItemsBody');
   const cartTotalLabel = document.querySelector('#cartTotalLabel');
   const cartEmptyState = document.querySelector('#cartEmptyState');
@@ -28,7 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const STORAGE_COUNTRY_KEY = 'tienda_country';
-  const STORAGE_CART_KEY = 'tienda_cart';
+  const STORAGE_CART_KEY_PREFIX = 'tienda_cart_';
+
+  const getCartStorageKey = () => `${STORAGE_CART_KEY_PREFIX}${countrySelector.value || 'CO'}`;
 
   const parseRate = (value, fallback) => {
     const parsed = Number.parseFloat(String(value || '').replace(',', '.'));
@@ -337,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const getCart = () => {
     try {
-      const parsed = JSON.parse(localStorage.getItem(STORAGE_CART_KEY) || '[]');
+      const parsed = JSON.parse(localStorage.getItem(getCartStorageKey()) || '[]');
       return Array.isArray(parsed) ? parsed : [];
     } catch (error) {
       return [];
@@ -346,9 +352,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const saveCart = (items) => {
     try {
-      localStorage.setItem(STORAGE_CART_KEY, JSON.stringify(items));
+      localStorage.setItem(getCartStorageKey(), JSON.stringify(items));
     } catch (error) {
       // Ignore storage errors in restricted contexts.
+    }
+  };
+
+  const filterCatalogByCountry = (countryCode) => {
+    let visibleProducts = 0;
+
+    categoryFilterLinks.forEach((link) => {
+      const isVisible = (link.dataset.countryCode || 'CO') === countryCode;
+      link.hidden = !isVisible;
+    });
+
+    categoryCards.forEach((card) => {
+      const isVisible = (card.dataset.countryCode || 'CO') === countryCode;
+      card.hidden = !isVisible;
+    });
+
+    productItems.forEach((item) => {
+      const isVisible = (item.dataset.countryCode || 'CO') === countryCode;
+      item.hidden = !isVisible;
+      if (isVisible) {
+        visibleProducts += 1;
+      }
+    });
+
+    if (productsEmptyState) {
+      productsEmptyState.style.display = visibleProducts > 0 ? 'none' : '';
     }
   };
 
@@ -504,12 +536,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const applyCountry = (countryCode) => {
     const selectedCountry = countryConfig[countryCode] ? countryCode : 'CO';
 
+    countrySelector.value = selectedCountry;
+
     priceTags.forEach((priceTag) => {
       const label = buildPriceLabel(priceTag, selectedCountry);
       priceTag.textContent = label;
     });
 
-    countrySelector.value = selectedCountry;
+    filterCatalogByCountry(selectedCountry);
     applyTranslations();
     applyCategoryTranslations();
     applyProductTranslations();
