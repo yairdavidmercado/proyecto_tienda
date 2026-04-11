@@ -116,16 +116,16 @@ require __DIR__ . '/includes/header.php';
         <div class="carousel-item">
             <img src="https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?auto=format&fit=crop&w=1600&q=80" class="d-block w-100 hero-slide-img" alt="Pantallas premium">
             <div class="carousel-caption hero-slide-caption">
-                <span class="slide-eyebrow">Pantallas y cuentas</span>
-                <h2>Los mejores precios en streaming premium</h2>
+                <span class="slide-eyebrow" data-i18n="hero_slide2_eyebrow">Pantallas y cuentas</span>
+                <h2 data-i18n="hero_slide2_title">Los mejores precios en streaming premium</h2>
                 <a href="#productos" class="btn btn-light rounded-pill px-5 mt-2" data-i18n="hero_cta_catalog">Ver catalogo</a>
             </div>
         </div>
         <div class="carousel-item">
             <img src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?auto=format&fit=crop&w=1600&q=80" class="d-block w-100 hero-slide-img" alt="Digital global">
             <div class="carousel-caption hero-slide-caption">
-                <span class="slide-eyebrow">Colombia &middot; Espa&ntilde;a &middot; M&eacute;xico &middot; USA</span>
-                <h2>Disponible para todo el mundo</h2>
+                <span class="slide-eyebrow" data-i18n="hero_slide3_eyebrow">Colombia &middot; Espa&ntilde;a &middot; M&eacute;xico &middot; USA</span>
+                <h2 data-i18n="hero_slide3_title">Disponible para todo el mundo</h2>
                 <a href="#productos" class="btn btn-light rounded-pill px-5 mt-2" data-i18n="hero_cta_catalog">Ver catalogo</a>
             </div>
         </div>
@@ -195,7 +195,7 @@ require __DIR__ . '/includes/header.php';
                 $cleanCopLabel = '$' . number_format($basePriceCop, 0, ',', '.');
                 $productCountryCodes = normalize_country_codes(explode(',', (string) ($product['country_codes'] ?: $product['country_code'])));
             ?>
-                <div class="col-md-6 col-xl-4 js-product-item" data-country-codes="<?= e(implode(',', $productCountryCodes)); ?>">
+                <div class="col-sm-6 col-lg-4 col-xl-3 js-product-item" data-country-codes="<?= e(implode(',', $productCountryCodes)); ?>">
                     <div class="product-card h-100">
                         <div class="product-image-wrap">
                             <img src="<?= e($image); ?>" class="product-image" alt="<?= e($product['name']); ?>">

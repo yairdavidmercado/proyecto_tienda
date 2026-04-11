@@ -100,6 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
       country_select_label: 'Selecciona tu pais', country_co: '🇨🇴 Colombia', country_es: '🇪🇸 Espana', country_mx: '🇲🇽 Mexico', country_us: '🇺🇸 Estados Unidos',
       cart_nav: 'Carrito', login: 'Iniciar sesion', hero_badge: 'Catalogo digital automatizado',
       hero_title: 'Combos, cuentas y pantallas listas para vender', hero_subtitle: 'Pantallas streaming con entrega inmediata, precios claros y atencion directa por WhatsApp.',
+      hero_slide2_eyebrow: 'Pantallas y cuentas', hero_slide2_title: 'Los mejores precios en streaming premium',
+      hero_slide3_eyebrow: 'Colombia · Espana · Mexico · USA', hero_slide3_title: 'Disponible para todo el mundo',
       hero_cta_catalog: 'Ver catalogo', hero_cta_whatsapp: 'Pedir por WhatsApp', featured: 'Destacado',
       hero_side_title: 'Experiencia visual moderna', hero_side_text: 'Diseno limpio, elegante y claro con estilo premium.',
       categories: 'Categorias', catalog: 'Catalogo', products_available: 'Productos disponibles',
@@ -126,6 +128,8 @@ document.addEventListener('DOMContentLoaded', () => {
       country_select_label: 'Selecciona tu pais', country_co: '🇨🇴 Colombia', country_es: '🇪🇸 Espana', country_mx: '🇲🇽 Mexico', country_us: '🇺🇸 Estados Unidos',
       cart_nav: 'Carrito', login: 'Iniciar sesion', hero_badge: 'Catalogo digital automatizado',
       hero_title: 'Combos, cuentas y pantallas listas para vender', hero_subtitle: 'Pantallas streaming con entrega inmediata, precios claros y atencion directa por WhatsApp.',
+      hero_slide2_eyebrow: 'Pantallas y cuentas', hero_slide2_title: 'Los mejores precios en streaming premium',
+      hero_slide3_eyebrow: 'Colombia · Espana · Mexico · USA', hero_slide3_title: 'Disponible para todo el mundo',
       hero_cta_catalog: 'Ver catalogo', hero_cta_whatsapp: 'Pedir por WhatsApp', featured: 'Destacado',
       hero_side_title: 'Experiencia visual moderna', hero_side_text: 'Diseno limpio, elegante y claro con estilo premium.',
       categories: 'Categorias', catalog: 'Catalogo', products_available: 'Productos disponibles',
@@ -152,6 +156,8 @@ document.addEventListener('DOMContentLoaded', () => {
       country_select_label: 'Selecciona tu pais', country_co: '🇨🇴 Colombia', country_es: '🇪🇸 Espana', country_mx: '🇲🇽 Mexico', country_us: '🇺🇸 Estados Unidos',
       cart_nav: 'Carrito', login: 'Iniciar sesion', hero_badge: 'Catalogo digital automatizado',
       hero_title: 'Combos, cuentas y pantallas listas para vender', hero_subtitle: 'Pantallas streaming con entrega inmediata, precios claros y atencion directa por WhatsApp.',
+      hero_slide2_eyebrow: 'Pantallas y cuentas', hero_slide2_title: 'Los mejores precios en streaming premium',
+      hero_slide3_eyebrow: 'Colombia · Espana · Mexico · USA', hero_slide3_title: 'Disponible para todo el mundo',
       hero_cta_catalog: 'Ver catalogo', hero_cta_whatsapp: 'Pedir por WhatsApp', featured: 'Destacado',
       hero_side_title: 'Experiencia visual moderna', hero_side_text: 'Diseno limpio, elegante y claro con estilo premium.',
       categories: 'Categorias', catalog: 'Catalogo', products_available: 'Productos disponibles',
@@ -178,6 +184,8 @@ document.addEventListener('DOMContentLoaded', () => {
       country_select_label: 'Select your country', country_co: '🇨🇴 Colombia', country_es: '🇪🇸 Spain', country_mx: '🇲🇽 Mexico', country_us: '🇺🇸 United States',
       cart_nav: 'Cart', login: 'Sign in', hero_badge: 'Automated digital catalog',
       hero_title: 'Combos, accounts, and screens ready to sell', hero_subtitle: 'Streaming screens with instant delivery, clear pricing, and direct WhatsApp support.',
+      hero_slide2_eyebrow: 'Screens and accounts', hero_slide2_title: 'Best prices for premium streaming',
+      hero_slide3_eyebrow: 'Colombia · Spain · Mexico · USA', hero_slide3_title: 'Available worldwide',
       hero_cta_catalog: 'View catalog', hero_cta_whatsapp: 'Order via WhatsApp', featured: 'Featured',
       hero_side_title: 'Modern visual experience', hero_side_text: 'Clean, bright and premium design with soft transparency.',
       categories: 'Categories', catalog: 'Catalog', products_available: 'Available products',
@@ -377,7 +385,10 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.forEach((el) => {
       const key = el.dataset.i18n;
       if (!key) return;
-      el.textContent = t(key);
+      const translated = t(key);
+      if (translated !== key) {
+        el.textContent = translated;
+      }
     });
 
     const label = document.querySelector('label[for="countrySelector"]');

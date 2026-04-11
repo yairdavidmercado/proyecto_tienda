@@ -269,13 +269,32 @@ body {
     background: linear-gradient(155deg, rgba(255,255,255,0.2), rgba(0,0,0,0.2));
     border: 1px solid rgba(255,255,255,0.34);
 }
-.product-image-wrap { position: relative; height: 240px; overflow: hidden; }
+.product-image-wrap { position: relative; height: 220px; overflow: hidden; }
 .product-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
     filter: saturate(.95) contrast(1.05);
+}
+
+@media (min-width: 1200px) {
+    .products-priority-section .js-product-item .product-content {
+        padding: 1.1rem !important;
+    }
+    .products-priority-section .product-image-wrap {
+        height: 190px;
+    }
+    .products-priority-section .price-tag {
+        font-size: 1.05rem;
+    }
+    .products-priority-section .qty-step-btn {
+        width: 26px;
+        height: 26px;
+    }
+    .products-priority-section .qty-input {
+        max-width: 66px;
+    }
 }
 .featured-badge {
     position: absolute;
@@ -316,31 +335,33 @@ body {
 .qty-stepper {
     display: inline-flex;
     align-items: center;
-    gap: .45rem;
-    padding: .25rem;
+    gap: .3rem;
+    padding: .15rem;
     border-radius: 999px;
-    background: rgba(255,255,255,0.35);
-    border: 1px solid rgba(255,255,255,0.45);
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.34);
 }
 .qty-step-btn {
-    width: 34px;
-    height: 34px;
+    width: 28px;
+    height: 28px;
     border: none;
     border-radius: 50%;
-    background: rgba(255,255,255,0.85);
-    color: #111;
-    font-size: 1.1rem;
+    background: rgba(255,255,255,0.92);
+    color: #1d1d1f;
+    font-size: .95rem;
+    font-weight: 600;
     line-height: 1;
     display: inline-flex;
     align-items: center;
     justify-content: center;
 }
 .qty-input {
-    max-width: 92px;
+    max-width: 72px;
     border-radius: 999px;
     text-align: center;
-    padding-top: .55rem;
-    padding-bottom: .55rem;
+    padding-top: .35rem;
+    padding-bottom: .35rem;
+    font-size: .9rem;
 }
 .cart-panel {
     background: linear-gradient(155deg, rgba(255,255,255,0.2), rgba(0,0,0,0.2));
@@ -535,6 +556,13 @@ body.cart-open {
     color: #fff;
     box-shadow: 0 0 0 .25rem rgba(255,255,255,0.08);
     border-color: rgba(255,255,255,0.25);
+}
+.qty-stepper .qty-input.form-control,
+.qty-stepper .qty-input.form-control-sm {
+    height: 32px;
+    min-height: 32px;
+    padding: .2rem .45rem;
+    line-height: 1.1;
 }
 .table-dark-glass {
     background: rgba(255,255,255,0.04);
@@ -829,13 +857,13 @@ body.cart-open {
 }
 
 .public-site .qty-stepper {
-    background: rgba(246, 247, 249, 0.95);
+    background: rgba(246, 247, 249, 0.78);
     border: 1px solid rgba(0,0,0,0.08);
 }
 
 .public-site .qty-step-btn {
-    background: #ffffff;
-    border: 1px solid rgba(0,0,0,0.06);
+    background: rgba(255,255,255,0.95);
+    border: 1px solid rgba(0,0,0,0.08);
 }
 
 .public-site .cart-table {

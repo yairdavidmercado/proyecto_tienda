@@ -1,5 +1,6 @@
 <?php
 $settings = $settings ?? [];
+$cssVersion = @filemtime(__DIR__ . '/../assets/css/style.css') ?: time();
 ?>
 <!doctype html>
 <html lang="es">
@@ -12,7 +13,7 @@ $settings = $settings ?? [];
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=<?= e((string) $cssVersion); ?>">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 <body class="public-site">
