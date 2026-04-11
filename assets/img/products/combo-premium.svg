@@ -3,17 +3,4 @@
   <rect x="36" y="36" width="828" height="528" rx="28" fill="url(#bg)"/>
   <circle cx="754" cy="142" r="116" fill="#38217D" fill-opacity="0.55"/>
   <circle cx="177" cy="456" r="136" fill="#29145D" fill-opacity="0.7"/>
-  <rect x="76" y="84" width="252" height="48" rx="24" fill="#2CCB6F"/>
-  <text x="106" y="116" fill="white" font-family="Arial, sans-serif" font-size="28" font-weight="700">COMBOS PREMIUM</text>
-  <text x="76" y="220" fill="#F8F6FF" font-family="Arial, sans-serif" font-size="74" font-weight="800">Streaming</text>
-  <text x="76" y="300" fill="#F8F6FF" font-family="Arial, sans-serif" font-size="74" font-weight="800">listo para vender</text>
-  <text x="76" y="380" fill="#D8D0FF" font-family="Arial, sans-serif" font-size="30">Catalogo digital con combos y acceso rapido</text>
-  <rect x="76" y="436" width="332" height="68" rx="20" fill="#FFD33D"/>
-  <text x="118" y="480" fill="#1D0F4F" font-family="Arial, sans-serif" font-size="34" font-weight="800">Entrega digital inmediata</text>
-  <defs>
-    <linearGradient id="bg" x1="40" y1="56" x2="860" y2="544" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#24115B"/>
-      <stop offset="1" stop-color="#14072E"/>
-    </linearGradient>
-  </defs>
 </svg>
