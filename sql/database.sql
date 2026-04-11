@@ -65,4 +65,11 @@ INSERT INTO settings (setting_key, setting_value) VALUES
 ('hero_title', 'Combos, cuentas y pantallas en una vitrina premium'),
 ('hero_subtitle', 'Una página moderna, limpia y responsiva para mostrar productos digitales y convertir visitas en ventas.'),
 ('whatsapp_number', '573001234567'),
-('whatsapp_message_general', 'Hola, quiero información sobre los productos digitales disponibles.');
+('whatsapp_number_co', '573001234567'),
+('whatsapp_number_es', '34600111222'),
+('whatsapp_number_mx', '5215512345678'),
+('whatsapp_number_us', '12025550123'),
+('whatsapp_message_general', 'Hola, quiero información sobre los productos digitales disponibles.'),
+('rate_cop_to_eur', '0.00023'),
+('rate_cop_to_mxn', '0.0044'),
+('rate_cop_to_usd', '0.00026');
