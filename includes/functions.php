@@ -92,12 +92,12 @@ function get_categories(PDO $pdo): array
 function get_products(PDO $pdo, ?int $categoryId = null): array
 {
     if ($categoryId) {
-        $stmt = $pdo->prepare('SELECT p.*, c.name AS category_name, c.country_code AS category_country_code FROM products p INNER JOIN categories c ON c.id = p.category_id WHERE p.status = 1 AND c.status = 1 AND p.category_id = ? ORDER BY p.featured DESC, p.id DESC');
+        $stmt = $pdo->prepare('SELECT p.*, c.name AS category_name, c.country_code AS category_country_code FROM products p INNER JOIN categories c ON c.id = p.category_id WHERE p.status = 1 AND c.status = 1 AND p.category_id = ? ORDER BY p.sort_order ASC, p.featured DESC, p.id DESC');
         $stmt->execute([$categoryId]);
         return $stmt->fetchAll();
     }
 
-    $stmt = $pdo->query('SELECT p.*, c.name AS category_name, c.country_code AS category_country_code FROM products p INNER JOIN categories c ON c.id = p.category_id WHERE p.status = 1 AND c.status = 1 ORDER BY p.country_code ASC, p.featured DESC, p.id DESC');
+    $stmt = $pdo->query('SELECT p.*, c.name AS category_name, c.country_code AS category_country_code FROM products p INNER JOIN categories c ON c.id = p.category_id WHERE p.status = 1 AND c.status = 1 ORDER BY p.country_code ASC, p.sort_order ASC, p.featured DESC, p.id DESC');
     return $stmt->fetchAll();
 }
 

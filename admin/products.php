@@ -150,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($imageError) {
             flash_message('danger', $imageError);
         } else {
-            $stmt = $pdo->prepare('INSERT INTO products (category_id, country_code, country_codes, name, short_description, price_label, image_url, featured, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
+            $stmt = $pdo->prepare('INSERT INTO products (category_id, country_code, country_codes, name, short_description, price_label, image_url, sort_order, featured, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
             $stmt->execute([
                 $categoryId,
                 $countryCode,
@@ -159,6 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 trim($_POST['short_description'] ?? ''),
                 trim($_POST['price_label'] ?? ''),
                 $imageUrl,
+                (int) ($_POST['sort_order'] ?? 0),
                 isset($_POST['featured']) ? 1 : 0,
                 isset($_POST['status']) ? 1 : 0,
             ]);
@@ -193,7 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($imageError) {
             flash_message('danger', $imageError);
         } else {
-            $stmt = $pdo->prepare('UPDATE products SET category_id = ?, country_code = ?, country_codes = ?, name = ?, short_description = ?, price_label = ?, image_url = ?, featured = ?, status = ? WHERE id = ?');
+            $stmt = $pdo->prepare('UPDATE products SET category_id = ?, country_code = ?, country_codes = ?, name = ?, short_description = ?, price_label = ?, image_url = ?, sort_order = ?, featured = ?, status = ? WHERE id = ?');
             $stmt->execute([
                 $categoryId,
                 $countryCode,
@@ -202,6 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 trim($_POST['short_description'] ?? ''),
                 trim($_POST['price_label'] ?? ''),
                 $imageUrl,
+                (int) ($_POST['sort_order'] ?? 0),
                 isset($_POST['featured']) ? 1 : 0,
                 isset($_POST['status']) ? 1 : 0,
                 $productId,
@@ -221,7 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $categories = $pdo->query('SELECT id, name, country_code FROM categories WHERE status = 1 ORDER BY country_code ASC, sort_order ASC, name ASC')->fetchAll();
-$products = $pdo->query('SELECT p.*, c.name AS category_name FROM products p LEFT JOIN categories c ON c.id = p.category_id ORDER BY p.id DESC')->fetchAll();
+$products = $pdo->query('SELECT p.*, c.name AS category_name FROM products p LEFT JOIN categories c ON c.id = p.category_id ORDER BY p.sort_order ASC, p.id DESC')->fetchAll();
 $isEditing = is_array($editingProduct);
 $selectedCountries = $isEditing
     ? normalize_country_codes(explode(',', (string) ($editingProduct['country_codes'] ?: $editingProduct['country_code'])))
@@ -269,6 +271,10 @@ admin_header('Productos');
                 <div>
                     <label class="form-label text-white">Precio visible</label>
                     <input type="text" name="price_label" class="form-control" placeholder="$25.000 / mes" value="<?= e($editingProduct['price_label'] ?? ''); ?>" required>
+                </div>
+                <div>
+                    <label class="form-label text-white">Orden (menor primero)</label>
+                    <input type="number" name="sort_order" class="form-control" min="0" step="1" value="<?= (int) ($editingProduct['sort_order'] ?? 0); ?>">
                 </div>
                 <div>
                     <label class="form-label text-white">URL de imagen</label>
@@ -326,6 +332,7 @@ admin_header('Productos');
                             <th>Categoría</th>
                             <th>País</th>
                             <th>Precio</th>
+                            <th>Orden</th>
                             <th>Imagen</th>
                             <th></th>
                         </tr>
@@ -347,6 +354,7 @@ admin_header('Productos');
                             <td><?= e($product['category_name']); ?></td>
                             <td><?= e(implode(', ', $countryLabels)); ?></td>
                             <td><?= e($product['price_label']); ?></td>
+                            <td><?= (int) ($product['sort_order'] ?? 0); ?></td>
                             <td>
                                 <?php if (!empty($product['image_url'])): ?>
                                     <img src="<?= e(product_image_src((string) $product['image_url'])); ?>" alt="<?= e($product['name']); ?>" class="rounded" style="width:56px;height:56px;object-fit:cover;">
