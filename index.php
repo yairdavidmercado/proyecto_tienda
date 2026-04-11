@@ -114,7 +114,7 @@ require __DIR__ . '/includes/header.php';
             </div>
         </div>
         <div class="carousel-item">
-            <img src="https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?auto=format&fit=crop&w=1600&q=80" class="d-block w-100 hero-slide-img" alt="Pantallas premium">
+            <img src="assets/img/sliders/slider-02.jpg" class="d-block w-100 hero-slide-img" alt="Pantallas premium">
             <div class="carousel-caption hero-slide-caption">
                 <span class="slide-eyebrow" data-i18n="hero_slide2_eyebrow">Pantallas y cuentas</span>
                 <h2 data-i18n="hero_slide2_title">Los mejores precios en streaming premium</h2>
@@ -122,9 +122,9 @@ require __DIR__ . '/includes/header.php';
             </div>
         </div>
         <div class="carousel-item">
-            <img src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?auto=format&fit=crop&w=1600&q=80" class="d-block w-100 hero-slide-img" alt="Digital global">
+            <img src="assets/img/sliders/slider-03.jpg" class="d-block w-100 hero-slide-img" alt="Digital global">
             <div class="carousel-caption hero-slide-caption">
-                <span class="slide-eyebrow" data-i18n="hero_slide3_eyebrow">Colombia &middot; Espa&ntilde;a &middot; M&eacute;xico &middot; USA</span>
+                <span class="slide-eyebrow" data-i18n="hero_slide3_eyebrow">Colombia &middot; España &middot; M&eacute;xico &middot; USA</span>
                 <h2 data-i18n="hero_slide3_title">Disponible para todo el mundo</h2>
                 <a href="#productos" class="btn btn-light rounded-pill px-5 mt-2" data-i18n="hero_cta_catalog">Ver catalogo</a>
             </div>
