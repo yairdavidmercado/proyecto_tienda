@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const i18n = {
     'es-CO': {
       nav_categories: 'Categorias', nav_products: 'Productos', nav_contact: 'Contacto',
-      country_select_label: 'Selecciona tu pais', country_co: '🇨🇴 Colombia', country_es: '🇪🇸 Espana', country_mx: '🇲🇽 Mexico', country_us: '🇺🇸 Estados Unidos',
+      country_select_label: 'Selecciona tu pais', country_co: '🇨🇴 Colombia', country_es: '🇪🇸 España', country_mx: '🇲🇽 Mexico', country_us: '🇺🇸 Estados Unidos',
       cart_nav: 'Carrito', login: 'Iniciar sesion', hero_badge: 'Catalogo digital automatizado',
       hero_title: 'Combos, cuentas y pantallas listas para vender', hero_subtitle: 'Pantallas streaming con entrega inmediata, precios claros y atencion directa por WhatsApp.',
       hero_slide2_eyebrow: 'Pantallas y cuentas', hero_slide2_title: 'Los mejores precios en streaming premium',
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     'es-ES': {
       nav_categories: 'Categorias', nav_products: 'Productos', nav_contact: 'Contacto',
-      country_select_label: 'Selecciona tu pais', country_co: '🇨🇴 Colombia', country_es: '🇪🇸 Espana', country_mx: '🇲🇽 Mexico', country_us: '🇺🇸 Estados Unidos',
+      country_select_label: 'Selecciona tu pais', country_co: '🇨🇴 Colombia', country_es: '🇪🇸 España', country_mx: '🇲🇽 Mexico', country_us: '🇺🇸 Estados Unidos',
       cart_nav: 'Carrito', login: 'Iniciar sesion', hero_badge: 'Catalogo digital automatizado',
       hero_title: 'Combos, cuentas y pantallas listas para vender', hero_subtitle: 'Pantallas streaming con entrega inmediata, precios claros y atencion directa por WhatsApp.',
       hero_slide2_eyebrow: 'Pantallas y cuentas', hero_slide2_title: 'Los mejores precios en streaming premium',
@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     'es-MX': {
       nav_categories: 'Categorias', nav_products: 'Productos', nav_contact: 'Contacto',
-      country_select_label: 'Selecciona tu pais', country_co: '🇨🇴 Colombia', country_es: '🇪🇸 Espana', country_mx: '🇲🇽 Mexico', country_us: '🇺🇸 Estados Unidos',
+      country_select_label: 'Selecciona tu pais', country_co: '🇨🇴 Colombia', country_es: '🇪🇸 España', country_mx: '🇲🇽 Mexico', country_us: '🇺🇸 Estados Unidos',
       cart_nav: 'Carrito', login: 'Iniciar sesion', hero_badge: 'Catalogo digital automatizado',
       hero_title: 'Combos, cuentas y pantallas listas para vender', hero_subtitle: 'Pantallas streaming con entrega inmediata, precios claros y atencion directa por WhatsApp.',
       hero_slide2_eyebrow: 'Pantallas y cuentas', hero_slide2_title: 'Los mejores precios en streaming premium',
