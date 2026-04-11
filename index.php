@@ -106,7 +106,7 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <img src="https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?auto=format&fit=crop&w=1600&q=80" class="d-block w-100 hero-slide-img" alt="Streaming">
+            <img src="assets/img/sliders/slider-01.jpg" class="d-block w-100 hero-slide-img" alt="Streaming">
             <div class="carousel-caption hero-slide-caption">
                 <span class="slide-eyebrow" data-i18n="hero_badge">Catalogo digital automatizado</span>
                 <h2 data-i18n="hero_title">Combos, cuentas y pantallas listas para vender</h2>
