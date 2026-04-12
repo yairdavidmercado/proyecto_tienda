@@ -98,6 +98,20 @@ require __DIR__ . '/includes/header.php';
     </div>
 </nav>
 
+<div id="countryGate" class="country-gate" aria-hidden="true">
+    <div class="country-gate-card">
+        <h2>Seleccione el pais de origen</h2>
+        <p>Necesitamos tu pais para mostrar precios y contenido local.</p>
+        <label for="countryGateSelect" class="visually-hidden">Seleccione el pais de origen</label>
+        <select id="countryGateSelect" class="form-select">
+            <?php foreach ($supportedCountries as $countryCode => $countryName): ?>
+                <option value="<?= e($countryCode); ?>"><?= e($countryName); ?></option>
+            <?php endforeach; ?>
+        </select>
+        <button type="button" id="countryGateConfirm" class="btn btn-light rounded-pill w-100">Ingresar</button>
+    </div>
+</div>
+
 <div id="heroSlider" class="carousel slide hero-slider" data-bs-ride="carousel" data-bs-interval="5000">
     <div class="carousel-indicators">
         <button type="button" data-bs-target="#heroSlider" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>

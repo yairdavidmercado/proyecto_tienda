@@ -60,7 +60,7 @@ function get_supported_countries(): array
 {
     return [
         'CO' => 'Colombia',
-        'ES' => 'Espana',
+        'ES' => 'España',
         'MX' => 'Mexico',
         'US' => 'Estados Unidos',
     ];

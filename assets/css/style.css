@@ -33,6 +33,57 @@ body {
     color: var(--text);
 }
 
+body.country-gate-open {
+    overflow: hidden;
+}
+
+.country-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background: rgba(12, 12, 14, 0.5);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.country-gate.is-open {
+    display: flex;
+}
+
+.country-gate-card {
+    width: min(440px, 100%);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    border-radius: 24px;
+    padding: 1.4rem;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.18);
+    text-align: center;
+}
+
+.country-gate-card h2 {
+    margin: 0;
+    color: #1d1d1f;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.country-gate-card p {
+    margin: .45rem 0 1rem;
+    color: #6e6e73;
+    font-size: .95rem;
+}
+
+.country-gate-card .form-select {
+    margin-bottom: .9rem;
+    background: rgba(255,255,255,0.98);
+    color: #1d1d1f;
+    border: 1px solid rgba(10, 10, 10, 0.12);
+}
+
 .glass-nav,
 .glass-panel,
 .category-card,

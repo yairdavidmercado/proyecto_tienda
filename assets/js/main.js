@@ -28,6 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const cartCountBadge = document.querySelector('#cartCountBadge');
   const paymentMethodsDataNode = document.querySelector('#paymentMethodsByCountryData');
   const paymentMethodsContent = document.querySelector('#paymentMethodsContent');
+  const countryGate = document.querySelector('#countryGate');
+  const countryGateSelect = document.querySelector('#countryGateSelect');
+  const countryGateConfirm = document.querySelector('#countryGateConfirm');
 
   if (!countrySelector) {
     return;
@@ -648,17 +651,56 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  const openCountryGate = () => {
+    if (!countryGate || !countryGateSelect) {
+      return;
+    }
+    countryGate.classList.add('is-open');
+    countryGate.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('country-gate-open');
+    countryGateSelect.value = countrySelector.value || 'CO';
+    countryGateSelect.focus();
+  };
+
+  const closeCountryGate = () => {
+    if (!countryGate) {
+      return;
+    }
+    countryGate.classList.remove('is-open');
+    countryGate.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('country-gate-open');
+  };
+
   let initialCountry = countrySelector.value || 'CO';
+  let hasStoredCountry = false;
   try {
     const storedCountry = localStorage.getItem(STORAGE_COUNTRY_KEY);
     if (storedCountry && countryConfig[storedCountry]) {
       initialCountry = storedCountry;
+      hasStoredCountry = true;
     }
   } catch (error) {
     // Keep selector default when storage access is restricted.
   }
 
-  applyCountry(initialCountry);
+  if (hasStoredCountry) {
+    applyCountry(initialCountry);
+  } else {
+    countrySelector.value = initialCountry;
+    openCountryGate();
+  }
+
+  if (countryGateConfirm && countryGateSelect) {
+    countryGateConfirm.addEventListener('click', () => {
+      const selected = countryConfig[countryGateSelect.value] ? countryGateSelect.value : 'CO';
+      applyCountry(selected);
+      closeCountryGate();
+    });
+
+    countryGateSelect.addEventListener('change', () => {
+      countrySelector.value = countryGateSelect.value;
+    });
+  }
 
   document.addEventListener('click', (event) => {
     const target = event.target;
