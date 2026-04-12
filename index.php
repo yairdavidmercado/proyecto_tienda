@@ -299,8 +299,8 @@ require __DIR__ . '/includes/header.php';
                         <thead>
                             <tr>
                                 <th class="text-secondary" data-i18n="table_product">Producto</th>
-                                <th class="text-secondary" data-i18n="table_unit_price">Precio unitario</th>
-                                <th class="text-secondary" data-i18n="table_quantity">Cantidad</th>
+                                <th class="text-secondary" data-i18n="table_unit_price">Precio</th>
+                                <th class="text-secondary" data-i18n="table_quantity">Cant.</th>
                                 <th class="text-secondary text-end" data-i18n="table_subtotal">Subtotal</th>
                                 <th></th>
                             </tr>
