@@ -88,6 +88,11 @@ require __DIR__ . '/includes/header.php';
                         <option value="<?= e($countryCode); ?>" data-i18n="country_<?= strtolower($countryCode); ?>"><?= e($countryName); ?></option>
                     <?php endforeach; ?>
                 </select>
+                <label class="visually-hidden" for="langSelector">Idioma</label>
+                <select id="langSelector" class="form-select nav-lang-select ms-2" aria-label="Idioma">
+                    <option value="es-CO">Español</option>
+                    <option value="en-US">English</option>
+                </select>
                 <a href="#carrito" id="openCartBtn" class="btn btn-outline-light rounded-pill px-3 position-relative">
                     <span data-i18n="cart_nav">Carrito</span>
                     <span id="cartCountBadge" class="badge rounded-pill text-bg-light ms-1">0</span>

@@ -116,8 +116,14 @@ body.country-gate-open {
     gap: .6rem;
 }
 
+/* Selector de país */
 .nav-country-select {
     min-width: 190px;
+}
+
+/* Selector de idioma */
+.nav-lang-select {
+    min-width: 170px;
     min-height: 44px;
     border-radius: 999px;
     background: rgba(255,255,255,0.08);

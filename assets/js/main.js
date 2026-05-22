@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const countrySelector = document.querySelector('#countrySelector');
+  const langSelector = document.querySelector('#langSelector');
   const priceTags = document.querySelectorAll('.js-product-price');
   const addButtons = document.querySelectorAll('.js-add-to-cart');
   const categoryFilterLinks = document.querySelectorAll('.js-category-filter');
@@ -213,7 +214,10 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const getCountry = (countryCode) => countryConfig[countryCode] || countryConfig.CO;
-  const getLang = () => getCountry(countrySelector.value).lang;
+  // Idioma seleccionado manualmente o por país
+  const STORAGE_LANG_KEY = 'tienda_lang';
+  let selectedLang = null;
+  const getLang = () => selectedLang || getCountry(countrySelector.value).lang;
   const categoryTranslations = {
     'en-US': {
       1: { name: 'Screen Combos', desc: 'Packages for clients who buy access by profile or screen.' },
@@ -671,6 +675,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.remove('country-gate-open');
   };
 
+
   let initialCountry = countrySelector.value || 'CO';
   let hasStoredCountry = false;
   try {
@@ -688,6 +693,28 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     countrySelector.value = initialCountry;
     openCountryGate();
+  }
+
+  // Idioma por defecto según país, pero permite override manual (no se guarda)
+  if (langSelector) {
+    // Idioma nativo por país: español para CO, MX, ES; inglés para US
+    if (["CO", "MX", "ES"].includes(initialCountry)) {
+      langSelector.value = "es-CO";
+      selectedLang = "es-CO";
+    } else if (initialCountry === "US") {
+      langSelector.value = "en-US";
+      selectedLang = "en-US";
+    } else {
+      langSelector.value = getCountry(initialCountry).lang;
+      selectedLang = getCountry(initialCountry).lang;
+    }
+    langSelector.addEventListener('change', () => {
+      selectedLang = langSelector.value;
+      applyTranslations();
+      applyCategoryTranslations();
+      applyProductTranslations();
+      renderCart();
+    });
   }
 
   if (countryGateConfirm && countryGateSelect) {
@@ -805,5 +832,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   countrySelector.addEventListener('change', () => {
     applyCountry(countrySelector.value);
+    // Al cambiar país, idioma por defecto: español para CO, MX, ES; inglés para US
+    if (langSelector) {
+      if (["CO", "MX", "ES"].includes(countrySelector.value)) {
+        langSelector.value = "es-CO";
+        selectedLang = "es-CO";
+      } else if (countrySelector.value === "US") {
+        langSelector.value = "en-US";
+        selectedLang = "en-US";
+      } else {
+        langSelector.value = getCountry(countrySelector.value).lang;
+        selectedLang = getCountry(countrySelector.value).lang;
+      }
+      applyTranslations();
+      applyCategoryTranslations();
+      applyProductTranslations();
+      renderCart();
+    }
   });
 });
