@@ -187,3 +187,53 @@ function setting_is_enabled(array $settings, string $key): bool
 {
     return isset($settings[$key]) && (string) $settings[$key] === '1';
 }
+
+function wompi_get_transaction(array $settings, string $transactionId): ?array
+{
+    $transactionId = trim($transactionId);
+
+    if ($transactionId === '') {
+        return null;
+    }
+
+    $publicKey = trim((string) ($settings['wompi_public_key'] ?? ''));
+
+    if ($publicKey === '') {
+        return null;
+    }
+
+    $environment = (string) ($settings['wompi_environment'] ?? 'sandbox');
+
+    $baseUrl = ($environment === 'production')
+        ? 'https://production.wompi.co'
+        : 'https://sandbox.wompi.co';
+
+    $url = $baseUrl . '/v1/transactions/' . rawurlencode($transactionId);
+
+    $ch = curl_init($url);
+
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => [
+            'Authorization: Bearer ' . $publicKey,
+            'Accept: application/json',
+        ],
+        CURLOPT_TIMEOUT => 20,
+    ]);
+
+    $response = curl_exec($ch);
+    $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($response === false || $httpCode < 200 || $httpCode >= 300) {
+        return null;
+    }
+
+    $json = json_decode($response, true);
+
+    if (!is_array($json)) {
+        return null;
+    }
+
+    return $json['data'] ?? null;
+}

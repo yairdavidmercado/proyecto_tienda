@@ -15,6 +15,51 @@ if ($reference !== '') {
     $order = $stmt->fetch();
 }
 
+/*
+ * Si Wompi retorna el id de transacción en la URL,
+ * consultamos el estado real en Wompi y actualizamos la orden.
+ */
+if ($order && $transactionId !== '') {
+    $transaction = wompi_get_transaction($settings, $transactionId);
+
+    if (is_array($transaction)) {
+        $wompiReference = (string) ($transaction['reference'] ?? '');
+        $wompiStatus = (string) ($transaction['status'] ?? '');
+        $wompiTransactionId = (string) ($transaction['id'] ?? '');
+        $wompiPaymentMethod = (string) ($transaction['payment_method_type'] ?? '');
+        $wompiAmountInCents = (int) ($transaction['amount_in_cents'] ?? 0);
+
+        if (
+            $wompiReference === $order['reference']
+            && $wompiAmountInCents === (int) $order['amount_in_cents']
+            && $wompiStatus !== ''
+        ) {
+            $updateStmt = $pdo->prepare("
+                UPDATE orders
+                SET
+                    status = ?,
+                    wompi_transaction_id = ?,
+                    wompi_payment_method = ?,
+                    raw_event = ?,
+                    updated_at = NOW()
+                WHERE id = ?
+            ");
+
+            $updateStmt->execute([
+                $wompiStatus,
+                $wompiTransactionId,
+                $wompiPaymentMethod,
+                json_encode(['source' => 'payment_result', 'transaction' => $transaction]),
+                (int) $order['id'],
+            ]);
+
+            $stmt = $pdo->prepare('SELECT * FROM orders WHERE id = ? LIMIT 1');
+            $stmt->execute([(int) $order['id']]);
+            $order = $stmt->fetch();
+        }
+    }
+}
+
 require __DIR__ . '/includes/header.php';
 ?>
 
