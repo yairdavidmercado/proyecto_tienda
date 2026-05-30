@@ -23,6 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'rate_cop_to_eur',
         'rate_cop_to_mxn',
         'rate_cop_to_usd',
+        'wompi_environment',
+        'wompi_public_key',
+        'wompi_private_key',
+        'wompi_integrity_key',
+        'wompi_events_key',
+        'wompi_enabled',
     ];
 
     $numericRates = ['rate_cop_to_eur', 'rate_cop_to_mxn', 'rate_cop_to_usd'];
@@ -141,6 +147,51 @@ admin_header('Ajustes del sitio');
             <input type="text" name="rate_cop_to_usd" class="form-control" value="<?= e($settings['rate_cop_to_usd'] ?? '0.00026'); ?>" placeholder="0.00026 o 3850">
         </div>
         <div class="col-12">
+
+            <div class="col-12">
+                <hr class="border-secondary-subtle">
+                <h2 class="h5 text-white mb-1">Wompi</h2>
+                <p class="text-secondary mb-0 small">
+                    Usa llaves sandbox para pruebas y llaves producción cuando el cliente ya vaya a recibir dinero real.
+                </p>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label text-white">Wompi habilitado</label>
+                <select name="wompi_enabled" class="form-control">
+                    <option value="1" <?= (($settings['wompi_enabled'] ?? '1') === '1') ? 'selected' : ''; ?>>Sí</option>
+                    <option value="0" <?= (($settings['wompi_enabled'] ?? '1') === '0') ? 'selected' : ''; ?>>No</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label text-white">Ambiente</label>
+                <select name="wompi_environment" class="form-control">
+                    <option value="sandbox" <?= (($settings['wompi_environment'] ?? 'sandbox') === 'sandbox') ? 'selected' : ''; ?>>Sandbox</option>
+                    <option value="production" <?= (($settings['wompi_environment'] ?? 'sandbox') === 'production') ? 'selected' : ''; ?>>Producción</option>
+                </select>
+            </div>
+
+            <div class="col-md-12">
+                <label class="form-label text-white">Llave pública</label>
+                <input type="text" name="wompi_public_key" class="form-control" value="<?= e($settings['wompi_public_key'] ?? ''); ?>" placeholder="pub_test_...">
+            </div>
+
+            <div class="col-md-12">
+                <label class="form-label text-white">Llave privada</label>
+                <input type="text" name="wompi_private_key" class="form-control" value="<?= e($settings['wompi_private_key'] ?? ''); ?>" placeholder="prv_test_...">
+            </div>
+
+            <div class="col-md-12">
+                <label class="form-label text-white">Llave de integridad</label>
+                <input type="text" name="wompi_integrity_key" class="form-control" value="<?= e($settings['wompi_integrity_key'] ?? ''); ?>" placeholder="test_integrity_...">
+            </div>
+
+            <div class="col-md-12">
+                <label class="form-label text-white">Llave de eventos</label>
+                <input type="text" name="wompi_events_key" class="form-control" value="<?= e($settings['wompi_events_key'] ?? ''); ?>" placeholder="test_events_...">
+            </div>
+            
             <button class="btn btn-light rounded-pill px-4">Guardar cambios</button>
         </div>
     </form>

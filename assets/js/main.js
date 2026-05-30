@@ -27,6 +27,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const sendCartWhatsappBtn = document.querySelector('#sendCartWhatsappBtn');
   const clearCartBtn = document.querySelector('#clearCartBtn');
   const cartCountBadge = document.querySelector('#cartCountBadge');
+
+  const payWompiBtn = document.querySelector('#payWompiBtn');
+  const confirmWompiPaymentBtn = document.querySelector('#confirmWompiPaymentBtn');
+  const wompiCustomerModalNode = document.querySelector('#wompiCustomerModal');
+  const wompiCustomerName = document.querySelector('#wompiCustomerName');
+  const wompiCustomerEmail = document.querySelector('#wompiCustomerEmail');
+  const wompiCustomerPhone = document.querySelector('#wompiCustomerPhone');
+
   const paymentMethodsDataNode = document.querySelector('#paymentMethodsByCountryData');
   const paymentMethodsContent = document.querySelector('#paymentMethodsContent');
   const countryGate = document.querySelector('#countryGate');
@@ -589,6 +597,90 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCart();
   };
 
+  const openWompiCustomerModal = () => {
+      const items = getCart();
+
+      if (items.length === 0) {
+        alert(t('msg_empty_cart'));
+        return;
+      }
+
+      if (!wompiCustomerModalNode || typeof bootstrap === 'undefined') {
+        alert('No se pudo abrir el formulario de pago.');
+        return;
+      }
+
+      const modal = bootstrap.Modal.getOrCreateInstance(wompiCustomerModalNode);
+      modal.show();
+    };
+
+    const createWompiCheckout = async () => {
+    const items = getCart();
+
+    if (items.length === 0) {
+      alert(t('msg_empty_cart'));
+      return;
+    }
+
+    const customer = {
+      name: wompiCustomerName ? wompiCustomerName.value.trim() : '',
+      email: wompiCustomerEmail ? wompiCustomerEmail.value.trim() : '',
+      phone: wompiCustomerPhone ? wompiCustomerPhone.value.trim() : ''
+    };
+
+    if (!customer.name) {
+      alert('Ingresa el nombre del cliente.');
+      return;
+    }
+
+    if (!customer.email) {
+      alert('Ingresa el correo del cliente.');
+      return;
+    }
+
+    if (!customer.phone) {
+      alert('Ingresa el WhatsApp o telefono del cliente.');
+      return;
+    }
+
+    if (confirmWompiPaymentBtn) {
+      confirmWompiPaymentBtn.disabled = true;
+      confirmWompiPaymentBtn.textContent = 'Creando pago...';
+    }
+
+    try {
+      const response = await fetch('payments/create_checkout.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          country: countrySelector.value || 'CO',
+          customer,
+          items: items.map((item) => ({
+            productId: item.productId,
+            qty: item.qty
+          }))
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.message || 'No se pudo crear el pago.');
+      }
+
+      window.location.href = data.checkout_url;
+    } catch (error) {
+      alert(error.message || 'Error creando el pago.');
+    } finally {
+      if (confirmWompiPaymentBtn) {
+        confirmWompiPaymentBtn.disabled = false;
+        confirmWompiPaymentBtn.textContent = 'Continuar a Wompi';
+      }
+    }
+  };
+
   const sendCartToWhatsapp = () => {
     const items = getCart();
     if (items.length === 0) {
@@ -821,6 +913,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (sendCartWhatsappBtn) {
     sendCartWhatsappBtn.addEventListener('click', sendCartToWhatsapp);
+  }
+
+  if (payWompiBtn) {
+    payWompiBtn.addEventListener('click', openWompiCustomerModal);
+  }
+
+  if (confirmWompiPaymentBtn) {
+    confirmWompiPaymentBtn.addEventListener('click', createWompiCheckout);
   }
 
   if (clearCartBtn) {

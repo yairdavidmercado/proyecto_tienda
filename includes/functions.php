@@ -106,3 +106,32 @@ function whatsapp_link(string $phone, string $message): string
     $cleanPhone = preg_replace('/\D+/', '', $phone);
     return 'https://wa.me/' . $cleanPhone . '?text=' . rawurlencode($message);
 }
+
+function absolute_url(string $path = ''): string
+{
+    $https = (
+        (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || (isset($_SERVER['SERVER_PORT']) && (int) $_SERVER['SERVER_PORT'] === 443)
+        || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+    );
+
+    $scheme = $https ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+
+    $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/'), '/\\');
+    if ($base === '.' || $base === '/') {
+        $base = '';
+    }
+
+    return $scheme . '://' . $host . $base . '/' . ltrim($path, '/');
+}
+
+function product_price_to_cop($priceLabel): int
+{
+    return (int) preg_replace('/\D+/', '', (string) $priceLabel);
+}
+
+function setting_is_enabled(array $settings, string $key): bool
+{
+    return isset($settings[$key]) && (string) $settings[$key] === '1';
+}
