@@ -70,6 +70,14 @@ if ($order && $transactionId !== '') {
             $stmt->execute([(int) $order['id']]);
             $order = $stmt->fetch();
 
+            if (
+                $order
+                && strtoupper((string) $order['status']) === 'APPROVED'
+                && empty($order['payment_notified_at'])
+            ) {
+                notify_order_paid($pdo, $order, $settings);
+            }
+
             $itemsStmt = $pdo->prepare('
                 SELECT *
                 FROM order_items

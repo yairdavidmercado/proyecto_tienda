@@ -237,3 +237,82 @@ function wompi_get_transaction(array $settings, string $transactionId): ?array
 
     return $json['data'] ?? null;
 }
+
+function notify_order_paid(PDO $pdo, array $order, array $settings): void
+{
+    $notificationEmail = trim((string) ($settings['notification_email'] ?? ''));
+
+    if ($notificationEmail === '' || !filter_var($notificationEmail, FILTER_VALIDATE_EMAIL)) {
+        file_put_contents(
+            __DIR__ . '/../payments/mail_debug.log',
+            date('Y-m-d H:i:s') . " - ERROR: notification_email vacío o inválido\n",
+            FILE_APPEND
+        );
+        return;
+    }
+
+    $itemsStmt = $pdo->prepare("
+        SELECT *
+        FROM order_items
+        WHERE order_id = ?
+        ORDER BY id ASC
+    ");
+    $itemsStmt->execute([(int) $order['id']]);
+    $items = $itemsStmt->fetchAll();
+
+    $productsText = '';
+
+    foreach ($items as $item) {
+        $productsText .= '- ' . (int) $item['quantity'] . ' x ' . $item['product_name'];
+        $productsText .= ' | Categoría: ' . ($item['category_name'] ?: 'Sin categoría');
+        $productsText .= ' | Subtotal: $' . number_format((int) $item['subtotal_cop'], 0, ',', '.') . " COP\n";
+    }
+
+    if ($productsText === '') {
+        $productsText = "Sin productos registrados.\n";
+    }
+
+    $subject = 'Pago aprobado - Pedido ' . $order['reference'];
+
+    $message = "Se ha aprobado un pago en Wompi.\n\n";
+    $message .= "Referencia: " . $order['reference'] . "\n";
+    $message .= "Estado: " . $order['status'] . "\n";
+    $message .= "Transacción Wompi: " . ($order['wompi_transaction_id'] ?? '-') . "\n";
+    $message .= "Método de pago: " . ($order['wompi_payment_method'] ?? '-') . "\n";
+    $message .= "País: " . $order['country_code'] . "\n";
+    $message .= "Total: $" . number_format((int) $order['amount_cop'], 0, ',', '.') . " COP\n\n";
+
+    $message .= "Cliente:\n";
+    $message .= "Nombre: " . $order['customer_name'] . "\n";
+    $message .= "Correo: " . $order['customer_email'] . "\n";
+    $message .= "Teléfono: " . $order['customer_phone'] . "\n\n";
+
+    $message .= "Productos comprados:\n";
+    $message .= $productsText;
+
+    $headers = [];
+    $headers[] = 'From: Pixel Play <soporte@pixelplays.shop>';
+    $headers[] = 'Reply-To: ' . $order['customer_email'];
+    $headers[] = 'Content-Type: text/plain; charset=UTF-8';
+
+    $sent = mail($notificationEmail, $subject, $message, implode("\r\n", $headers));
+
+    file_put_contents(
+        __DIR__ . '/../payments/mail_debug.log',
+        date('Y-m-d H:i:s') .
+        " - Enviando a: " . $notificationEmail .
+        " - Resultado: " . ($sent ? 'OK' : 'ERROR') .
+        " - Referencia: " . $order['reference'] .
+        "\n",
+        FILE_APPEND
+    );
+
+    if ($sent) {
+        $updateStmt = $pdo->prepare("
+            UPDATE orders
+            SET payment_notified_at = NOW()
+            WHERE id = ?
+        ");
+        $updateStmt->execute([(int) $order['id']]);
+    }
+}
