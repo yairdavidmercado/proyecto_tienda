@@ -4,6 +4,12 @@ require __DIR__ . '/../includes/functions.php';
 
 http_response_code(200);
 
+file_put_contents(
+    __DIR__ . '/wompi_webhook_debug.log',
+    date('Y-m-d H:i:s') . " - WEBHOOK RECIBIDO\n" . file_get_contents('php://input') . "\n\n",
+    FILE_APPEND
+);
+
 function wompi_get_nested_value(array $array, string $path)
 {
     $parts = explode('.', $path);
@@ -76,11 +82,21 @@ function notify_order_paid(PDO $pdo, array $order, array $settings): void
     $message .= $productsText;
 
     $headers = [];
-    $headers[] = 'From: Pixel Play <no-reply@pixelplays.shop>';
+    $headers[] = 'From: Pixel Play <soporte@pixelplays.shop>';
     $headers[] = 'Reply-To: ' . $order['customer_email'];
     $headers[] = 'Content-Type: text/plain; charset=UTF-8';
 
     $sent = mail($notificationEmail, $subject, $message, implode("\r\n", $headers));
+
+    file_put_contents(
+        __DIR__ . '/mail_debug.log',
+        date('Y-m-d H:i:s') .
+        " - Enviando a: " . $notificationEmail .
+        " - Resultado: " . ($sent ? 'OK' : 'ERROR') .
+        " - Referencia: " . $order['reference'] .
+        "\n",
+        FILE_APPEND
+    );
 
     if ($sent) {
         $updateStmt = $pdo->prepare("
@@ -94,6 +110,11 @@ function notify_order_paid(PDO $pdo, array $order, array $settings): void
 
 try {
     $rawBody = file_get_contents('php://input');
+    file_put_contents(
+        __DIR__ . '/wompi_webhook_debug.log',
+        date('Y-m-d H:i:s') . " - BODY\n" . $rawBody . "\n\n",
+        FILE_APPEND
+    );
     $event = json_decode($rawBody, true);
 
     if (!is_array($event)) {
