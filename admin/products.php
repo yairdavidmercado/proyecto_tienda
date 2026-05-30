@@ -238,7 +238,7 @@ admin_header('Productos');
 ?>
 <div class="row g-4">
     <div class="col-lg-5">
-        <div class="glass-panel p-4">
+        <div class="glass-panel p-4 overflow-hidden">
             <h2 class="h5 text-white mb-3"><?= $isEditing ? 'Editar producto' : 'Nuevo producto'; ?></h2>
             <form method="post" class="d-grid gap-3" enctype="multipart/form-data">
                 <input type="hidden" name="action" value="<?= $isEditing ? 'update' : 'create'; ?>">

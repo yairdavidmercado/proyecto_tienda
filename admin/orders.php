@@ -34,7 +34,7 @@ foreach ($itemsStmt->fetchAll() as $item) {
 admin_header('Pedidos Wompi');
 ?>
 
-<div class="glass-panel p-4">
+<div class="glass-panel p-4 overflow-hidden">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="h5 text-white mb-1">Pedidos recibidos</h2>
@@ -47,7 +47,7 @@ admin_header('Pedidos Wompi');
     <?php if (!$orders): ?>
         <div class="text-secondary">Aún no hay pedidos registrados.</div>
     <?php else: ?>
-        <div class="table-responsive">
+        <div class="table-responsive admin-table-scroll">
             <table class="table table-borderless align-middle mb-0 text-white admin-data-table">
                 <thead>
                     <tr class="text-secondary">
