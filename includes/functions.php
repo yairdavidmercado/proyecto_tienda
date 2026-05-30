@@ -118,27 +118,61 @@ function absolute_url(string $path = ''): string
     $scheme = $https ? 'https' : 'http';
     $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 
-    $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/'));
-
-    /*
-     * Si la petición viene desde /payments/create_checkout.php,
-     * quitamos /payments para que el retorno quede en la raíz.
-     */
-    $scriptDir = preg_replace('#/payments$#', '', $scriptDir);
-
-    $base = trim($scriptDir, '/');
-
-    $url = $scheme . '://' . $host;
-
-    if ($base !== '') {
-        $url .= '/' . $base;
+    $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/'), '/\\');
+    if ($base === '.' || $base === '/') {
+        $base = '';
     }
 
-    return rtrim($url, '/') . '/' . ltrim($path, '/');
+    return $scheme . '://' . $host . $base . '/' . ltrim($path, '/');
 }
 
-function product_price_to_cop($priceLabel): int
+function product_price_number($priceLabel): float
 {
+    $value = trim((string) $priceLabel);
+    $value = preg_replace('/[^\d,\.]/', '', $value);
+
+    if ($value === '') {
+        return 0;
+    }
+
+    if (strpos($value, ',') !== false && strpos($value, '.') !== false) {
+        $lastComma = strrpos($value, ',');
+        $lastDot = strrpos($value, '.');
+
+        if ($lastComma > $lastDot) {
+            $value = str_replace('.', '', $value);
+            $value = str_replace(',', '.', $value);
+        } else {
+            $value = str_replace(',', '', $value);
+        }
+    } elseif (strpos($value, ',') !== false) {
+        $value = str_replace(',', '.', $value);
+    }
+
+    return (float) $value;
+}
+
+function product_price_to_cop($priceLabel, string $priceBaseCurrency = 'COP', string $countryCode = 'CO', array $settings = []): int
+{
+    if ($priceBaseCurrency === 'LOCAL') {
+        $amount = product_price_number($priceLabel);
+
+        $rates = [
+            'ES' => isset($settings['rate_cop_to_eur']) ? (float) $settings['rate_cop_to_eur'] : 0.00023,
+            'US' => isset($settings['rate_cop_to_usd']) ? (float) $settings['rate_cop_to_usd'] : 0.00026,
+            'MX' => isset($settings['rate_cop_to_mxn']) ? (float) $settings['rate_cop_to_mxn'] : 0.0044,
+            'CO' => 1,
+        ];
+
+        $rate = $rates[$countryCode] ?? 1;
+
+        if ($rate <= 0) {
+            return 0;
+        }
+
+        return (int) round($amount / $rate);
+    }
+
     return (int) preg_replace('/\D+/', '', (string) $priceLabel);
 }
 

@@ -50,3 +50,7 @@ SET @sql := IF(
 PREPARE stmt FROM @sql;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
+
+ALTER TABLE products
+ADD COLUMN price_base_currency VARCHAR(10) NOT NULL DEFAULT 'COP'
+AFTER price_label;

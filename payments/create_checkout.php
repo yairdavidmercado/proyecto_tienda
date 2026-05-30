@@ -84,6 +84,7 @@ try {
             p.id,
             p.name,
             p.price_label,
+            p.price_base_currency,
             p.country_code,
             p.country_codes,
             p.status,
@@ -133,10 +134,14 @@ try {
             throw new Exception('Uno de los productos no esta disponible para el pais seleccionado.');
         }
 
-        $unitPriceCop = product_price_to_cop($product['price_label']);
-        if ($unitPriceCop <= 0) {
-            throw new Exception('Uno de los productos no tiene precio valido.');
-        }
+        $productMainCountry = normalize_country_code((string) ($product['country_code'] ?? $countryCode));
+
+        $unitPriceCop = product_price_to_cop(
+            $product['price_label'],
+            (string) ($product['price_base_currency'] ?? 'COP'),
+            $productMainCountry,
+            $settings
+        );
 
         $subtotalCop = $unitPriceCop * $qty;
         $amountCop += $subtotalCop;

@@ -150,7 +150,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($imageError) {
             flash_message('danger', $imageError);
         } else {
-            $stmt = $pdo->prepare('INSERT INTO products (category_id, country_code, country_codes, name, short_description, price_label, image_url, sort_order, featured, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+            $priceBaseCurrency = ($_POST['price_base_currency'] ?? 'COP') === 'LOCAL' ? 'LOCAL' : 'COP';
+
+            $stmt = $pdo->prepare('INSERT INTO products (category_id, country_code, country_codes, name, short_description, price_label, price_base_currency, image_url, sort_order, featured, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
             $stmt->execute([
                 $categoryId,
                 $countryCode,
@@ -158,6 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 trim($_POST['name'] ?? ''),
                 trim($_POST['short_description'] ?? ''),
                 trim($_POST['price_label'] ?? ''),
+                $priceBaseCurrency,
                 $imageUrl,
                 (int) ($_POST['sort_order'] ?? 0),
                 isset($_POST['featured']) ? 1 : 0,
@@ -194,7 +197,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($imageError) {
             flash_message('danger', $imageError);
         } else {
-            $stmt = $pdo->prepare('UPDATE products SET category_id = ?, country_code = ?, country_codes = ?, name = ?, short_description = ?, price_label = ?, image_url = ?, sort_order = ?, featured = ?, status = ? WHERE id = ?');
+            $priceBaseCurrency = ($_POST['price_base_currency'] ?? 'COP') === 'LOCAL' ? 'LOCAL' : 'COP';
+
+            $stmt = $pdo->prepare('UPDATE products SET category_id = ?, country_code = ?, country_codes = ?, name = ?, short_description = ?, price_label = ?, price_base_currency = ?, image_url = ?, sort_order = ?, featured = ?, status = ? WHERE id = ?');
             $stmt->execute([
                 $categoryId,
                 $countryCode,
@@ -202,6 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 trim($_POST['name'] ?? ''),
                 trim($_POST['short_description'] ?? ''),
                 trim($_POST['price_label'] ?? ''),
+                $priceBaseCurrency,
                 $imageUrl,
                 (int) ($_POST['sort_order'] ?? 0),
                 isset($_POST['featured']) ? 1 : 0,
@@ -269,8 +275,18 @@ admin_header('Productos');
                     <textarea name="short_description" class="form-control" rows="4"><?= e($editingProduct['short_description'] ?? ''); ?></textarea>
                 </div>
                 <div>
-                    <label class="form-label text-white">Precio visible</label>
-                    <input type="text" name="price_label" class="form-control" placeholder="$25.000 / mes" value="<?= e($editingProduct['price_label'] ?? ''); ?>" required>
+                    <label class="form-label text-white">Cómo tomar el precio</label>
+                    <select name="price_base_currency" class="form-select">
+                        <option value="COP" <?= !$isEditing || ($editingProduct['price_base_currency'] ?? 'COP') === 'COP' ? 'selected' : ''; ?>>
+                            Tomar como COP y convertir según el país
+                        </option>
+                        <option value="LOCAL" <?= $isEditing && ($editingProduct['price_base_currency'] ?? 'COP') === 'LOCAL' ? 'selected' : ''; ?>>
+                            Tomar directo en la moneda del país
+                        </option>
+                    </select>
+                    <div class="small text-secondary">
+                        Usa COP para productos creados en pesos. Usa directo para España, Estados Unidos o México cuando escribas el valor final en EUR, USD o MXN.
+                    </div>
                 </div>
                 <div>
                     <label class="form-label text-white">Orden (menor primero)</label>

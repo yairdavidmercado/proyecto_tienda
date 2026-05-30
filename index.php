@@ -210,9 +210,16 @@ require __DIR__ . '/includes/header.php';
 
             <?php foreach ($products as $product):
                 $image = $product['image_url'] ?: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&fit=crop&w=900&q=80';
+                $priceBaseCurrency = (string) ($product['price_base_currency'] ?? 'COP');
+                $priceNumber = (float) str_replace(',', '.', preg_replace('/[^\d,\.]/', '', (string) $product['price_label']));
                 $basePriceCop = (int) preg_replace('/\D+/', '', (string) $product['price_label']);
                 $cleanCopLabel = '$' . number_format($basePriceCop, 0, ',', '.');
                 $productCountryCodes = normalize_country_codes(explode(',', (string) ($product['country_codes'] ?: $product['country_code'])));
+                $productMainCountry = $productCountryCodes[0] ?? 'CO';
+
+                if ($priceBaseCurrency === 'LOCAL') {
+                    $cleanCopLabel = e((string) $product['price_label']);
+                }
             ?>
                 <div class="col-sm-6 col-lg-4 col-xl-3 js-product-item" data-country-codes="<?= e(implode(',', $productCountryCodes)); ?>">
                     <div class="product-card h-100">
@@ -244,9 +251,12 @@ require __DIR__ . '/includes/header.php';
                                         <div class="price-caption text-secondary mt-2" data-i18n="table_unit_price">Precio unitario</div>
                                         <span
                                             class="price-tag js-product-price"
+                                            data-base-price="<?= e((string) $priceNumber); ?>"
                                             data-base-price-cop="<?= (int) $basePriceCop; ?>"
-                                            data-default-label="<?= e($cleanCopLabel); ?>"
-                                        ><?= e($cleanCopLabel); ?></span>
+                                            data-price-base-currency="<?= e($priceBaseCurrency); ?>"
+                                            data-product-country-code="<?= e($productMainCountry); ?>"
+                                            data-default-label="<?= e((string) $product['price_label']); ?>"
+                                        ><?= $priceBaseCurrency === 'LOCAL' ? e((string) $product['price_label']) : e($cleanCopLabel); ?></span>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center gap-2 product-buy-controls">
@@ -272,6 +282,9 @@ require __DIR__ . '/includes/header.php';
                                     data-category-name="<?= e($product['category_name']); ?>"
                                     data-original-category-name="<?= e($product['category_name']); ?>"
                                     data-base-price-cop="<?= (int) $basePriceCop; ?>"
+                                    data-base-price="<?= e((string) $priceNumber); ?>"
+                                    data-price-base-currency="<?= e($priceBaseCurrency); ?>"
+                                    data-product-country-code="<?= e($productMainCountry); ?>"
                                     data-i18n="add_to_cart"
                                 >Anadir al carrito</button>
                             </div>
@@ -363,7 +376,7 @@ require __DIR__ . '/includes/header.php';
                 </div>
             </div>
         </div>
-        
+
     </div>
 </section>
 

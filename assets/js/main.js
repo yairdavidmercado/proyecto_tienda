@@ -377,20 +377,49 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const buildPriceLabel = (priceTag, countryCode) => {
-    const basePriceCop = Number(priceTag.dataset.basePriceCop || 0);
+      const priceBaseCurrency = priceTag.dataset.priceBaseCurrency || 'COP';
+      const productCountryCode = priceTag.dataset.productCountryCode || countryCode;
 
-    if (!basePriceCop || Number.isNaN(basePriceCop)) {
-      return priceTag.dataset.defaultLabel || priceTag.textContent.trim();
-    }
+      if (priceBaseCurrency === 'LOCAL') {
+        const directPrice = Number(priceTag.dataset.basePrice || 0);
 
-    const config = getCountry(countryCode);
-    const convertedPrice = basePriceCop * config.rate;
-    return formatPrice(convertedPrice, config);
+        if (!directPrice || Number.isNaN(directPrice)) {
+          return priceTag.dataset.defaultLabel || priceTag.textContent.trim();
+        }
+
+        return formatPrice(directPrice, getCountry(productCountryCode));
+      }
+
+      const basePriceCop = Number(priceTag.dataset.basePriceCop || 0);
+
+      if (!basePriceCop || Number.isNaN(basePriceCop)) {
+        return priceTag.dataset.defaultLabel || priceTag.textContent.trim();
+      }
+
+      const config = getCountry(countryCode);
+      const convertedPrice = basePriceCop * config.rate;
+      return formatPrice(convertedPrice, config);
   };
 
   const convertFromCop = (basePriceCop, countryCode) => {
     const config = getCountry(countryCode);
     return Number(basePriceCop || 0) * config.rate;
+  };
+
+  const getItemUnitAmount = (item, selectedCountry) => {
+    if ((item.priceBaseCurrency || 'COP') === 'LOCAL') {
+      return Number(item.basePrice || 0);
+    }
+
+    return convertFromCop(item.basePriceCop, selectedCountry);
+  };
+
+  const getItemCurrencyCountry = (item, selectedCountry) => {
+    if ((item.priceBaseCurrency || 'COP') === 'LOCAL') {
+      return item.productCountryCode || selectedCountry;
+    }
+
+    return selectedCountry;
   };
 
   const formatWithSuffix = (amount, countryCode) => formatPrice(amount, getCountry(countryCode));
@@ -528,12 +557,13 @@ document.addEventListener('DOMContentLoaded', () => {
         : null;
       const itemName = translatedProduct ? translatedProduct.name : item.name;
       const itemCategoryName = translatedCategory ? translatedCategory.name : (item.categoryName || t('uncategorized'));
-      const unitAmount = convertFromCop(item.basePriceCop, selectedCountry);
+      const unitAmount = getItemUnitAmount(item, selectedCountry);
+      const currencyCountry = getItemCurrencyCountry(item, selectedCountry);
       const lineTotal = unitAmount * qty;
       total += lineTotal;
 
-      const unitLabel = formatWithSuffix(unitAmount, selectedCountry);
-      const totalLabel = formatWithSuffix(lineTotal, selectedCountry);
+      const unitLabel = formatWithSuffix(unitAmount, currencyCountry);
+      const totalLabel = formatWithSuffix(lineTotal, currencyCountry);
 
       return `
         <tr>
@@ -584,12 +614,15 @@ document.addEventListener('DOMContentLoaded', () => {
       existing.qty = Math.max(1, Number(existing.qty || 1) + Number(payload.qty || 1));
     } else {
       items.push({
-        productId: payload.productId,
-        name: payload.name,
-        categoryName: payload.categoryName,
-        categoryId: payload.categoryId,
-        basePriceCop: Number(payload.basePriceCop || 0),
-        qty: Math.max(1, Number(payload.qty || 1))
+          productId: payload.productId,
+          name: payload.name,
+          categoryName: payload.categoryName,
+          categoryId: payload.categoryId,
+          basePriceCop: Number(payload.basePriceCop || 0),
+          basePrice: Number(payload.basePrice || 0),
+          priceBaseCurrency: payload.priceBaseCurrency || 'COP',
+          productCountryCode: payload.productCountryCode || '',
+          qty: Math.max(1, Number(payload.qty || 1))
       });
     }
 
@@ -706,12 +739,13 @@ document.addEventListener('DOMContentLoaded', () => {
         : null;
       const itemName = translatedProduct ? translatedProduct.name : item.name;
       const itemCategoryName = translatedCategory ? translatedCategory.name : (item.categoryName || t('uncategorized'));
-      const unitAmount = convertFromCop(item.basePriceCop, selectedCountry);
+      const unitAmount = getItemUnitAmount(item, selectedCountry);
+      const currencyCountry = getItemCurrencyCountry(item, selectedCountry);
       const lineTotal = unitAmount * qty;
       total += lineTotal;
 
-      const unitLabel = formatWithSuffix(unitAmount, selectedCountry);
-      const lineLabel = formatWithSuffix(lineTotal, selectedCountry);
+      const unitLabel = formatWithSuffix(unitAmount, currencyCountry);
+      const lineLabel = formatWithSuffix(lineTotal, currencyCountry);
       return `${index + 1}. ${itemName} (${itemCategoryName})\n   ${t('msg_qty')}: ${qty}\n   ${t('msg_unit')}: ${unitLabel}\n   ${t('msg_subtotal')}: ${lineLabel}`;
     });
 
@@ -849,12 +883,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const qty = Math.max(1, Number(qtyInput?.value || 1));
 
       addToCart({
-        productId: button.dataset.productId,
-        name: button.dataset.productName || '',
-        categoryName: button.dataset.categoryName || '',
-        categoryId: button.closest('.product-card')?.querySelector('[data-cat-id][data-cat-field="name"]')?.dataset.catId || '',
-        basePriceCop: button.dataset.basePriceCop || 0,
-        qty
+          productId: button.dataset.productId,
+          name: button.dataset.productName || '',
+          categoryName: button.dataset.categoryName || '',
+          categoryId: button.closest('.product-card')?.querySelector('[data-cat-id][data-cat-field="name"]')?.dataset.catId || '',
+          basePriceCop: button.dataset.basePriceCop || 0,
+          basePrice: button.dataset.basePrice || 0,
+          priceBaseCurrency: button.dataset.priceBaseCurrency || 'COP',
+          productCountryCode: button.dataset.productCountryCode || '',
+          qty
       });
 
       if (qtyInput) {
