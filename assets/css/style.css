@@ -452,9 +452,14 @@ body.country-gate-open {
     transform: translateX(102%);
     transition: transform .34s cubic-bezier(.22, .61, .36, 1);
 }
-.cart-drawer.is-open {
-    transform: translateX(0);
+#wompiCustomerModal {
+    z-index: 3060 !important;
 }
+
+.modal-backdrop {
+    z-index: 3050 !important;
+}
+
 .cart-header-top p {
     max-width: 320px;
     line-height: 1.4;
