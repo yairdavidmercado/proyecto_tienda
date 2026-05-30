@@ -119,7 +119,14 @@ function absolute_url(string $path = ''): string
     $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 
     $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/'), '/\\');
-    if ($base === '.' || $base === '/') {
+
+    // Si la petición viene desde /payments/create_checkout.php,
+    // subimos un nivel porque payment_result.php está en la raíz.
+    if (substr($base, -9) === '/payments') {
+        $base = dirname($base);
+    }
+
+    if ($base === '.' || $base === '/' || $base === '\\') {
         $base = '';
     }
 
