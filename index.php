@@ -339,45 +339,46 @@ require __DIR__ . '/includes/header.php';
                 </div>
             </div>
         </div>
-    </div>
-</section>
 
-<div class="modal fade" id="wompiCustomerModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark text-white">
-            <div class="modal-header border-secondary">
-                <h5 class="modal-title">Datos para el pago</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
+        <div class="modal fade" id="wompiCustomerModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-dark text-white">
+                    <div class="modal-header border-secondary">
+                        <h5 class="modal-title">Datos para el pago</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
 
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label class="form-label">Nombre completo</label>
-                    <input type="text" class="form-control" id="wompiCustomerName" placeholder="Nombre del cliente">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre completo</label>
+                            <input type="text" class="form-control" id="wompiCustomerName" placeholder="Nombre del cliente">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Correo</label>
+                            <input type="email" class="form-control" id="wompiCustomerEmail" placeholder="correo@ejemplo.com">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">WhatsApp / Teléfono</label>
+                            <input type="text" class="form-control" id="wompiCustomerPhone" placeholder="573001234567">
+                        </div>
+
+                        <div class="small text-secondary">
+                            El pago se procesa en Wompi en pesos colombianos. Después de aprobarse, el vendedor se comunicará contigo para la entrega.
+                        </div>
+                    </div>
+
+                    <div class="modal-footer border-secondary">
+                        <button type="button" class="btn btn-outline-light rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-light rounded-pill" id="confirmWompiPaymentBtn">Continuar a Wompi</button>
+                    </div>
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Correo</label>
-                    <input type="email" class="form-control" id="wompiCustomerEmail" placeholder="correo@ejemplo.com">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">WhatsApp / Teléfono</label>
-                    <input type="text" class="form-control" id="wompiCustomerPhone" placeholder="573001234567">
-                </div>
-
-                <div class="small text-secondary">
-                    El pago se procesa en Wompi en pesos colombianos. Después de aprobarse, el vendedor se comunicará contigo para la entrega.
-                </div>
-            </div>
-
-            <div class="modal-footer border-secondary">
-                <button type="button" class="btn btn-outline-light rounded-pill" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-light rounded-pill" id="confirmWompiPaymentBtn">Continuar a Wompi</button>
             </div>
         </div>
+
     </div>
-</div>
+</section>
 
 <section id="categorias" class="section-padding bg-soft-dark categories-secondary-section">
     <div class="container">
