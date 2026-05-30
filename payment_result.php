@@ -9,10 +9,23 @@ $transactionId = trim((string) ($_GET['id'] ?? ''));
 
 $order = null;
 
+$orderItems = [];
+
 if ($reference !== '') {
     $stmt = $pdo->prepare('SELECT * FROM orders WHERE reference = ? LIMIT 1');
     $stmt->execute([$reference]);
     $order = $stmt->fetch();
+}
+
+if ($order) {
+    $itemsStmt = $pdo->prepare('
+        SELECT *
+        FROM order_items
+        WHERE order_id = ?
+        ORDER BY id ASC
+    ');
+    $itemsStmt->execute([(int) $order['id']]);
+    $orderItems = $itemsStmt->fetchAll();
 }
 
 /*
@@ -56,6 +69,15 @@ if ($order && $transactionId !== '') {
             $stmt = $pdo->prepare('SELECT * FROM orders WHERE id = ? LIMIT 1');
             $stmt->execute([(int) $order['id']]);
             $order = $stmt->fetch();
+
+            $itemsStmt = $pdo->prepare('
+                SELECT *
+                FROM order_items
+                WHERE order_id = ?
+                ORDER BY id ASC
+            ');
+            $itemsStmt->execute([(int) $order['id']]);
+            $orderItems = $itemsStmt->fetchAll();
         }
     }
 }
@@ -95,6 +117,34 @@ require __DIR__ . '/includes/header.php';
                     <div>Transacción Wompi: <strong class="text-white"><?= e($transactionId); ?></strong></div>
                 <?php endif; ?>
             </div>
+
+            <?php if (!empty($orderItems)): ?>
+                <div class="mt-4 text-start mx-auto" style="max-width: 620px;">
+                    <h3 class="h5 text-white mb-3">Productos comprados</h3>
+
+                    <div class="d-grid gap-2">
+                        <?php foreach ($orderItems as $item): ?>
+                            <div class="p-3 rounded-4 border border-secondary-subtle">
+                                <div class="d-flex justify-content-between gap-3">
+                                    <div>
+                                        <div class="fw-semibold text-white">
+                                            <?= (int) $item['quantity']; ?> x <?= e($item['product_name']); ?>
+                                        </div>
+
+                                        <div class="small text-secondary">
+                                            <?= e($item['category_name'] ?? 'Sin categoría'); ?>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-white text-end">
+                                        $<?= number_format((int) $item['subtotal_cop'], 0, ',', '.'); ?> COP
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
 
             <a href="index.php" class="btn btn-light rounded-pill px-4 mt-4">Volver a la tienda</a>
         <?php endif; ?>

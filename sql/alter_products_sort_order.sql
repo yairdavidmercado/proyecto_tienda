@@ -54,3 +54,6 @@ DEALLOCATE PREPARE stmt;
 ALTER TABLE products
 ADD COLUMN price_base_currency VARCHAR(10) NOT NULL DEFAULT 'COP'
 AFTER price_label;
+
+ALTER TABLE orders
+ADD COLUMN payment_notified_at DATETIME NULL AFTER raw_event;

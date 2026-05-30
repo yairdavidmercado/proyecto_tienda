@@ -30,6 +30,7 @@ function admin_header(string $title): void {
                 <a class="nav-link <?= basename($_SERVER['PHP_SELF']) === 'dashboard.php' ? 'active' : ''; ?>" href="dashboard.php">Resumen</a>
                 <a class="nav-link <?= basename($_SERVER['PHP_SELF']) === 'products.php' ? 'active' : ''; ?>" href="products.php">Productos</a>
                 <a class="nav-link <?= basename($_SERVER['PHP_SELF']) === 'categories.php' ? 'active' : ''; ?>" href="categories.php">Categorías</a>
+                <a class="nav-link <?= basename($_SERVER['PHP_SELF']) === 'orders.php' ? 'active' : ''; ?>" href="orders.php">Pedidos</a>
                 <a class="nav-link <?= basename($_SERVER['PHP_SELF']) === 'settings.php' ? 'active' : ''; ?>" href="settings.php">Ajustes</a>
                 <a class="nav-link" href="logout.php">Cerrar sesión</a>
             </nav>
