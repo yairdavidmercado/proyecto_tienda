@@ -174,7 +174,7 @@ try {
      */
     $signature = hash('sha256', $reference . $amountInCents . $currency . $integrityKey);
 
-    $redirectUrl = absolute_url('../payment_result.php?reference=' . urlencode($reference));
+    $redirectUrl = absolute_url('payment_result.php?reference=' . urlencode($reference));
 
     $query = http_build_query([
         'public-key' => $publicKey,

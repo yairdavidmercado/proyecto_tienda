@@ -1,6 +1,8 @@
 CREATE DATABASE IF NOT EXISTS tienda_digital CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE tienda_digital;
 
+DROP TABLE IF EXISTS order_items;
+DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS settings;
@@ -36,6 +38,7 @@ CREATE TABLE products (
     short_description TEXT DEFAULT NULL,
     price_label VARCHAR(100) NOT NULL,
     image_url VARCHAR(255) DEFAULT NULL,
+    sort_order INT NOT NULL DEFAULT 0,
     featured TINYINT(1) NOT NULL DEFAULT 0,
     status TINYINT(1) NOT NULL DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -121,3 +124,44 @@ INSERT INTO settings (setting_key, setting_value) VALUES
 ('rate_cop_to_eur', '0.00023'),
 ('rate_cop_to_mxn', '0.0044'),
 ('rate_cop_to_usd', '0.00026');
+
+
+CREATE TABLE orders (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    reference VARCHAR(80) NOT NULL,
+    country_code CHAR(2) NOT NULL DEFAULT 'CO',
+    customer_name VARCHAR(150) NOT NULL,
+    customer_email VARCHAR(150) NOT NULL,
+    customer_phone VARCHAR(50) NOT NULL,
+    amount_cop INT UNSIGNED NOT NULL DEFAULT 0,
+    amount_in_cents INT UNSIGNED NOT NULL DEFAULT 0,
+    currency CHAR(3) NOT NULL DEFAULT 'COP',
+    status VARCHAR(30) NOT NULL DEFAULT 'PENDING',
+    wompi_transaction_id VARCHAR(120) DEFAULT NULL,
+    wompi_payment_method VARCHAR(80) DEFAULT NULL,
+    wompi_status_message VARCHAR(255) DEFAULT NULL,
+    raw_event LONGTEXT DEFAULT NULL,
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_orders_reference (reference),
+    KEY idx_orders_status (status),
+    KEY idx_orders_transaction (wompi_transaction_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE order_items (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    order_id INT UNSIGNED NOT NULL,
+    product_id INT UNSIGNED NOT NULL,
+    product_name VARCHAR(180) NOT NULL,
+    category_name VARCHAR(180) DEFAULT NULL,
+    unit_price_cop INT UNSIGNED NOT NULL DEFAULT 0,
+    quantity INT UNSIGNED NOT NULL DEFAULT 1,
+    subtotal_cop INT UNSIGNED NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    KEY idx_order_items_order (order_id),
+    KEY idx_order_items_product (product_id),
+    CONSTRAINT fk_order_items_order
+        FOREIGN KEY (order_id) REFERENCES orders(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

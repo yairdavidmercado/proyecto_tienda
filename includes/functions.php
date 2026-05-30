@@ -118,12 +118,23 @@ function absolute_url(string $path = ''): string
     $scheme = $https ? 'https' : 'http';
     $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 
-    $base = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/'), '/\\');
-    if ($base === '.' || $base === '/') {
-        $base = '';
+    $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/'));
+
+    /*
+     * Si la petición viene desde /payments/create_checkout.php,
+     * quitamos /payments para que el retorno quede en la raíz.
+     */
+    $scriptDir = preg_replace('#/payments$#', '', $scriptDir);
+
+    $base = trim($scriptDir, '/');
+
+    $url = $scheme . '://' . $host;
+
+    if ($base !== '') {
+        $url .= '/' . $base;
     }
 
-    return $scheme . '://' . $host . $base . '/' . ltrim($path, '/');
+    return rtrim($url, '/') . '/' . ltrim($path, '/');
 }
 
 function product_price_to_cop($priceLabel): int
