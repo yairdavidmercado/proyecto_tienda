@@ -431,7 +431,7 @@ body.country-gate-open {
     opacity: 0;
     pointer-events: none;
     transition: opacity .28s ease;
-    z-index: 1040;
+    z-index: 2040;
 }
 .cart-overlay.is-open {
     opacity: 1;
@@ -448,13 +448,22 @@ body.country-gate-open {
     display: flex;
     flex-direction: column;
     border-radius: 20px 0 0 0;
-    z-index: 1050;
+    z-index: 2050;
     transform: translateX(102%);
     transition: transform .34s cubic-bezier(.22, .61, .36, 1);
 }
 .cart-drawer.is-open {
     transform: translateX(0);
 }
+
+#wompiCustomerModal {
+    z-index: 2070;
+}
+
+.modal-backdrop {
+    z-index: 2060;
+}
+
 .cart-header-top p {
     max-width: 320px;
     line-height: 1.4;

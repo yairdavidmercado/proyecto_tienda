@@ -35,6 +35,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const wompiCustomerEmail = document.querySelector('#wompiCustomerEmail');
   const wompiCustomerPhone = document.querySelector('#wompiCustomerPhone');
 
+  // Mover capas flotantes al body para que no queden atrapadas
+  // dentro del z-index del contenedor de productos.
+  [cartOverlay, cartPanel, wompiCustomerModalNode].forEach((node) => {
+    if (node && node.parentElement !== document.body) {
+      document.body.appendChild(node);
+    }
+  });
+
   const paymentMethodsDataNode = document.querySelector('#paymentMethodsByCountryData');
   const paymentMethodsContent = document.querySelector('#paymentMethodsContent');
   const countryGate = document.querySelector('#countryGate');
